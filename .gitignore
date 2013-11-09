@@ -1,4 +1,6 @@
 .project
+.settings
+config.js
 
 lib-cov
 *.seed

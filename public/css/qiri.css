@@ -1,0 +1,221 @@
+/* search bar */
+s, strike, del {
+    text-decoration:line-through;
+}
+
+.tsearch {
+    padding:0 0 0 15px;
+    position:relative;
+    width:572px;
+}
+.tsearch-tabs li s {
+    display:none;
+}
+.tsearch-panel-fields, .tsearch .rc-tp-l, .tsearch .rc-tp-r, .tsearch .rc-bt-l, .tsearch .rc-bt-r {
+    background:url("/img/search-489-90.png") no-repeat scroll -999em 0 transparent;
+}
+
+.tsearch-panel-fields #q {
+    background-position:-468px -67px;
+    border:0 none;
+    color:#333333;
+    font-family:verdana,tahoma,arial, 宋体;
+    font-size:14px;
+    height:18px;
+    left:0;
+    line-height:20px;
+    padding:6px 4px 6px 26px;
+    position:absolute;
+    top:0;
+    width:404px;
+}
+
+.tsearch .rc-tp-l, .tsearch .rc-tp-r, .tsearch .rc-bt-l, .tsearch .rc-bt-r {
+    height:4px;
+    overflow:hidden;
+    position:absolute;
+    width:4px;
+}
+.tsearch-tabs li.tsearch-tabs-active s {
+    display:block;
+}
+.tsearch .rc-tp-l {
+    background-position:-352px -62px;
+    left:-1px;
+    top:-1px;
+}
+.tsearch .rc-bt-l {
+    background-position:-352px -66px;
+    bottom:-1px;
+    left:-1px;
+}
+.tsearch .rc-bt-r {
+    background-position:-360px -66px;
+    bottom:-1px;
+    right:-1px;
+}
+.tsearch-panel-fields .rc-tp-l {
+    background-position:-482px -40px;
+}
+.tsearch-panel .tsearch-panel-fields .rc-tp-l {
+    display:block;
+}
+.tsearch-panel-fields .rc-bt-l {
+    background-position:-482px -37px;
+    bottom:-1px !important;
+    left:-1px;
+}
+.tsearch-panel .rc-tp-l, .tsearch-lite .tsearch-panel .rc-tp-r {
+    display:none;
+}
+.tsearch-panel-fields .rc-tp-l, .tsearch-panel-fields .rc-bt-l {
+    height:3px;
+    width:3px;
+}
+
+.tsearch .rc-tp-r {
+    background-position:-356px -62px;
+    right:-1px;
+    top:-1px;
+}
+
+.tsearch-panel {
+    background:none repeat scroll 0 0 #EFEFEF;
+    border:1px solid #D0D0D0;
+    height:36px;
+    margin-top:-1px;
+    position:relative;
+	clear:both;
+}
+
+.tsearch-panel form {
+    margin:0;
+    padding:2px;
+    position:relative;
+}
+
+.tsearch-panel-fields label {
+    color:#BABABA;
+    cursor:text;
+    font-size:14px;
+    left:28px;
+    line-height:30px;
+    position:absolute;
+    top:0;
+    z-index:2;
+}
+
+.tsearch-panel-fields label {
+    background:url("/img/search-489-90.png") no-repeat scroll -468px -67px transparent;
+    left:0;
+    padding-left:28px;
+    top:0;
+}
+
+.tsearch-panel-fields {
+    background-color:#FFFFFF;
+    background-position:0 0;
+    border-color:#9B9F9F;
+    border-style:solid;
+    border-width:1px 0 1px 1px;
+    float:left;
+    height:30px;
+    position:relative;
+    width:435px;
+}
+.tsearch-panel-fields #q {
+    background:none repeat scroll 0 0 transparent;
+    padding:6px 4px;
+    width:427px;
+}
+
+.tsearch input.btnSearch {
+    background-color:#F68911;
+    background:url("/img/search-489-90.png") no-repeat scroll -999em 0 transparent;
+    background-position:-352px -30px;
+    border:0 none;
+    cursor:pointer;
+    height:32px;
+    padding:0;
+    right:2px;
+    top:2px;
+    width:130px;
+	margin:0;
+	text-indent:-999em;
+	float:right;
+}
+
+
+.tsearch-tabs {
+    position:relative;
+    z-index:1;
+}
+
+.tsearch-tabs ul {
+    font-size:12px;
+    overflow:hidden;
+}
+.tsearch ul, .tsearch li {
+    list-style:none outside none;
+    margin:0;
+    padding:0;
+}
+.tsearch-tabs li {
+    border-color:#FFFFFF;
+    border-style:solid;
+    border-width:1px 1px 0;
+    float:left;
+    margin-right:4px;
+    position:relative;
+}
+.tsearch-tabs li.tsearch-tabs-active {
+    background:none repeat scroll 0 0 #EFEFEF;
+    border-color:#D0D0D0;
+}
+
+.tsearch-tabs li a {
+    color:#005ED9;
+    float:left;
+    height:23px;
+    line-height:23px;
+    overflow:hidden;
+    padding:0 8px;
+    text-decoration:none;
+}
+.tsearch-tabs li.tsearch-tabs-active a {
+    padding:0 14px;
+}
+.tsearch-tabs li.tsearch-tabs-active a, .tsearch-tabs li.tsearch-tabs-active a:hover  {
+    color:#3E3E3E;
+    font-weight:bold;
+    height:24px;
+    text-decoration:none;
+}
+
+/*----------netbuy------*/
+.netbuy-body{ margin-top:10px; }
+.netbuy-box{ margin-bottom:-1px; position:relative; padding:3px 0px 0px 130px; width:828px; border:1px solid #DFDFE0; float:left; border-top:1px solid #ced9f1;}
+.netbuy-box:hover,.netbuy-box-hover{ background-color:#F7FAFF;}
+.netbuy-box dt{ position:absolute; left:10px; height:18px; overflow:hidden; top:14px; width:100px; background:url(/img/text.png) 0px -246px no-repeat; background-position:0px -248px\9; padding-left:18px; color:#333; font-weight:bold; font-size:14px;}
+.netbuy-box dd{ float:left; position:relative; width:165px;margin:0 0 -1px 0;}
+.netbuy-box dd i{ position:absolute; width:90px; border-bottom:1px solid #CED9F1; height:0; overflow:hidden; font-size:0; left:0; bottom:0;}
+.netbuy-box a{ line-height:40px; color:#333; }
+.netbuy-box dd a{letter-spacing:1px;}
+.netbuy-box dt a{ line-height:normal; cursor:default;}
+.netbuy-box dt a:hover{ color:#333; text-decoration:none;}
+.netbuy-box a:hover{ color:#d00; letter-spacing:0px; font-weight:bold;}
+.netbuy-box dd.decorate{ float:none; margin-bottom:0; position:absolute; top:0; left:0; width:958px; height:0; font-size:0; overflow:hidden; border-top:1px solid #F0F0F0; border-bottom:1px solid #F8F8F8; }
+
+
+/* Qiri */
+.navbar {background-color:#FC763E; height:39px; margin:10px 0}
+.navbar ul { font-size:14px; padding:0; float:left; margin:0}
+.navbar ul li {float:left; list-style:none}
+.navbar a {
+	text-decoration:none; color:#FFF; padding:9px 23px 10px; font-weight:bold; height:20px; float:left;
+	border-left:1px solid #FC763E; border-right:1px solid #FC763E;
+}
+.navbar a.current, .navbar a:hover, .navbar a:active {
+	background-color:#E04C0E;
+}
+.footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
