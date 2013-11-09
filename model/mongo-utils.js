@@ -17,18 +17,20 @@ var schemas = {
     },
     Area: {
         title: String,
-        links: [String]     
+        links: [String]
+    },
+    Node: {
+        nid: Number,
+        areas: [String]
     }
 };
 
 var mongoSchemas = (function() {
     var result = {};
-    for(var name in schemas) {
-        result[name] = conn.model(name,
-             mongoose.Schema(schemas[name], {
-                 strict: true
-             })
-        );
+    for ( var name in schemas) {
+        result[name] = conn.model(name, mongoose.Schema(schemas[name], {
+            strict : true
+        }));
     }
     return result;
 }());
