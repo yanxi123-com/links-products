@@ -36,11 +36,12 @@ app.configure(function() {
 
 // index
 app.get('/', routes.index);
+app.get('/n:id', routes.index);
 
 // 404
 app.use(function(req, res, next){
     res.status(404);
-    res.render('error', {title: '页面不存在', visitor: req.visitor});
+    res.render('error', {title: '页面不存在', nodeId: 0});
 });
 
 
