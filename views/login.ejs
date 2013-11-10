@@ -1,0 +1,12 @@
+{% include include/header %}
+
+<div class="container" style="min-height:300px">
+    <h2>请登录</h2>
+    <form action="/manage/login" method="post">
+	    <input name="password" type="password" style="width:200px" />
+	    <hr class="space"/>
+	    <input type="submit" value="提  交" />
+    </form>
+</div>
+
+{% include include/footer %}
