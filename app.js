@@ -42,6 +42,7 @@ app.configure(function() {
 app.get('/manage', routes.manage);
 app.get('/manage/n:id', routes.manage);
 app.post('/manage/login', routes.login);
+app.post('/manage/operation', routes.operation);
 
 //index
 app.get('/', routes.index);

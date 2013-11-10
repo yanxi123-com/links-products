@@ -11,6 +11,7 @@ var Node = mongoUtils.getSchema('Node');
 var Link = mongoUtils.getSchema('Link');
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
+var management = require('./management');
 
 var getSortedObjects = function(objects, ids) {
     var idIndexMap = {};
@@ -118,4 +119,15 @@ exports.login = function(req, res, next) {
     } else {
         res.render("login");
     }
+};
+
+exports.operation = function(req, res, next) {
+    var userId = req.signedCookies.userId;
+    if (!userId) {
+        return next(new QiriError(404));
+    }
+    if (!_.chain(management).functions().contains(req.body.action)) {
+        return next(new QiriError(404));
+    }
+    management[req.body.action](req, res, next);
 };
