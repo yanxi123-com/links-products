@@ -1,27 +1,20 @@
-<% include include/header %>
+{% include include/header %}
 
 <style>
     ul.links {float:left; padding:0; margin:0; font-size:14px}
     ul.links li {float:left; list-style:none; width:190px; margin:0 0 10px}
 </style>
-<div class="container" style="height:300px">
-    <h2>面部护肤热门品牌专卖店</h2>
-    <ul class="links">
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DhGsUvd28JWIcQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMY5EMnvZIgcv79%2FTFaMDK6QMQ1WwtHcUPNkyJ1%2Bg%2BT6T5UoOeRlV%2BcHCqbZtHB3Y2CVHw6844mu7K0z%2FFtze8cL%2FWcTcVwvSg3M34zStXw4bu0PIDJMp%2FIys6GqNzsNa7MiieeG6eRVcYaMzZIIWf1PEXzm7ZfO5Mg%3D%3D"
-        >相宜本草</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3D3gI2bokqUykcQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMXVjCiNDU6D1xq3IhSJN6GQMQ1WwtHcUPNkyJ1%2Bg%2BT6T5UoOeRlV%2BcHCqbZtHB3Y2CVHw6844mu7K0z%2FFtze8cL%2FWcTcVwvSg3M34zStXw4bu0PIDJMp%2FIxd4TLadV7k9ciieeG6eRVcYaMzZIIWf1PEXzm7ZfO5Mg%3D%3D"
-        >CLINIQUE 倩碧</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DVNJHb7d8xM4cQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMZQUISE1deBHlovu%2FCElQOsMQ1WwtHcUPNkyJ1%2Bg%2BT6T5UoOeRlV%2BcHCqbZtHB3Y2CVHw6844mu7K0z%2FFtze8cL%2FWcTcVwvSg3M34zStXw4bu0PIDJMp%2FIy0XX37oYaGKMiieeG6eRVcYaMzZIIWf1PEXzm7ZfO5Mg%3D%3D"
-        >OLAY 玉兰油</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DSBeqthr4fngcQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMaDs0YXsyoAdMMgx22UI05YMQ1WwtHcUPNkyJ1%2Bg%2BT6T5UoOeRlV%2BcHCqbZtHB3Y2CVHw6844mu7K0z%2FFtze8cL%2FWcTcVwvSg3M34zStXw4bo9cgHYpltUlhozNkghZ%2FU5LsMd0Kl2K3N2%2F2OnhTWGtZW3lUKb7TQw%3D%3D"
-        >L'Oreal 欧莱雅</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DnR3Mzh%2BkMOccQipKwQzePDAVflQIoZepK7Vc7tFgwiFRAdhuF14FMQO2mbF0gN1RMMgx22UI05YMQ1WwtHcUPK2E4xbeLtgIMzRSoL8D0UatD0dafC%2FZEg%3D%3D"
-        >百雀羚</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3Ds7wVn%2B0GQOYcQipKwQzePDAVflQIoZepK7Vc7tFgwiFRAdhuF14FMQ%2FXK0NOi0Cot4hWD5k2kjMMQ1WwtHcUPK2E4xbeLtgINKXOMuhuzfmgF0pbQcXgog%3D%3D"
-        >PROYA 珀莱雅</a></li>
-    <li><a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DA80Hi%2B0vElscQipKwQzePDAVflQIoZepK7Vc7tFgwiFRAdhuF14FMe0CgxD2q2x21aH1Hk3GeOgMQ1WwtHcUPK2E4xbeLtgIUDrtiW%2FC6GYQ3PokPdMAkw%3D%3D"
-        >WETHERM 温碧泉</a></li>
-    </ul>
+<div class="container" style="min-height:300px">
+    {% areas.forEach(function(area) { %}
+        <h2>{%= area.title %}</h2>
+        <div class="clearfix">
+        <ul class="links clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li><a target="_blank" href="{%= link.href %}">{%= link.text %}</a></li>
+            {% }) %}
+        </ul>
+        </div>
+    {% }) %}
 </div>
 
-<% include include/footer %>
+{% include include/footer %}

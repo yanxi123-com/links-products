@@ -4,11 +4,17 @@
  */
  
 var mongoose = require('mongoose'),
-    config = require('../config'),
-    conn = mongoose.createConnection(config.get('mongodb'));
+     config = require('../config'), 
+     conn = mongoose
+        .createConnection(config.get('mongodb'), {
+            server : {
+                auto_reconnect : true
+            }
+        });
 
 var schemas = {
     Link: {
+        areaId: String,
         text: String,
         href: String,
         tbBrand: {type: Number, "default": 0},
@@ -16,12 +22,13 @@ var schemas = {
         addDate: { type: Date, "default": Date.now }
     },
     Area: {
+        nid: Number,
         title: String,
-        links: [String]
+        linkIds: [String]
     },
     Node: {
         nid: Number,
-        areas: [String]
+        areaIds: [String]
     }
 };
 

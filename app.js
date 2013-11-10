@@ -11,7 +11,11 @@ var express = require('express'),
     routes = require('./routes'),
     accessLogfile = fs.createWriteStream(__dirname + '/var/logs/access.log', {flags: 'a'}),
     app = express(),
-    path = require('path');
+    path = require('path'),
+    ejs = require('ejs');
+
+ejs.open = '{%';
+ejs.close = '%}';
 
 app.configure(function() {
     app.set('port', config.get('port'));
@@ -41,9 +45,12 @@ app.get('/n:id', routes.index);
 // 404
 app.use(function(req, res, next){
     res.status(404);
-    res.render('error', {title: '页面不存在', nodeId: 0});
+    res.render('error', {title: '页面不存在'});
 });
 
+app.locals({
+    nodeId: -1
+});
 
 var server = http.createServer(app);
 server.setMaxListeners(100);

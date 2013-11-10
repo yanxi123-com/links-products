@@ -62,27 +62,13 @@
         <div class="navbar">
             <div class="container">
                 <ul>
-                    <li>
-                        <% if (nodeId == 0) { %><a class="current" href="/">首页</a><% } else { %><a href="/">首页</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 1) { %><a class="current" href="/n1">面部护肤</a><% } else { %><a href="/n1">面部护肤</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 2) { %><a class="current" href="/n2">时尚彩妆</a><% } else { %><a href="/n2">时尚彩妆</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 3) { %><a class="current" href="/n3">男士护肤</a><% } else { %><a href="/n3">男士护肤</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 4) { %><a class="current" href="/n4">香水精油</a><% } else { %><a href="/n4">香水精油</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 5) { %><a class="current" href="/n5">洗发沐浴</a><% } else { %><a href="/n5">洗发沐浴</a><% } %>
-                    </li>
-                    <li>
-                        <% if (nodeId == 6) { %><a class="current" href="/n6">美体瘦身</a><% } else { %><a href="/n6">美体瘦身</a><% } %>
-                    </li>
+                    <li><a {% if(nodeId == 0) { %}class="current"{% } %} href="/">首页</a></li>
+                    <li><a {% if(nodeId == 1) { %}class="current"{% } %} href="/n1">面部护肤</a></li>
+                    <li><a {% if(nodeId == 2) { %}class="current"{% } %} href="/n2">时尚彩妆</a></li>
+                    <li><a {% if(nodeId == 3) { %}class="current"{% } %} href="/n3">男士护肤</a></li>
+                    <li><a {% if(nodeId == 4) { %}class="current"{% } %} href="/n4">香水精油</a></li>
+                    <li><a {% if(nodeId == 5) { %}class="current"{% } %} href="/n5">洗发沐浴</a></li>
+                    <li><a {% if(nodeId == 6) { %}class="current"{% } %} href="/n6">美体瘦身</a></li>
                 </ul>
             </div>
         </div>
