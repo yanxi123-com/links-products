@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>{%= (node && node.nid > 0 && node.title) ? (node.title + ': ') : '' %}七日美容馆: 我们只推荐精品</title>
+        <meta name="description" content="七日美容馆为你推荐精品护肤、彩妆、香水等产品，让你健康美丽每一天。" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="/css/normalize.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <link rel="stylesheet" href="/css/qiri.css?v=1.3" />
+        
+        <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="/js/vendor/jquery-1.10.2.min.js"></script>
+        <script src="/js/plugins.js"></script>
+        <script src="/js/main.js"></script>
+
+        
+        <script src="/js/qiri.js?v=1.2"></script>
+        
+        <script src="http://l.tbcdn.cn/apps/top/x/sdk.js?appkey=21668301"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="span-9">
+                <a href="/" title="七日美容馆" target="_self"><img src="/img/logo-60.gif" border="0" alt="七日美容馆"></a>
+            </div>
+            
+            <div class="span-15 last">
+                <div class="tsearch" id="J_TSearch">
+                    <div class="tsearch-tabs" id="J_TSearchTabs">
+                        <ul>
+                            <li name="taobao" class="tsearch-tabs-active"><a href="#">淘宝网</a><s class="rc-tp-l"></s><s class="rc-tp-r"></s></li>
+                            <li name="tmall"><a href="#" target="_self">天猫</a><s class="rc-tp-l"></s><s class="rc-tp-r"></s></li>
+                            <li name="joyo"><a href="#" target="_self">亚马逊</a><s class="rc-tp-l"></s><s class="rc-tp-r"></s></li>
+                        </ul>
+                    </div>
+                    <div class="tsearch-panel">
+                    <form name="taobao" id="J_TSearchForm" target="_blank">
+                        <div class="tsearch-panel-fields">
+                            <label for="q" class="hide"></label>
+                            <input id="q" name="q" style="margin:0">
+                            <s class="rc-tp-l"></s>
+                            <s class="rc-bt-l"></s>
+                        </div>
+                        <input class="btnSearch" type="submit"/>
+                    </form>
+                        <s class="rc-tp-l"></s>
+                        <s class="rc-tp-r"></s>
+                        <s class="rc-bt-l"></s>
+                        <s class="rc-bt-r"></s>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar">
+            <div class="container">
+                <ul>
+                    <li><a {% if(node && node.nid == 0) { %}class="current"{% } %} href="/">首页</a></li>
+                    <li><a {% if(node && node.nid == 1) { %}class="current"{% } %} href="/n1">面部护肤</a></li>
+                    <li><a {% if(node && node.nid == 2) { %}class="current"{% } %} href="/n2">时尚彩妆</a></li>
+                    <li><a {% if(node && node.nid == 3) { %}class="current"{% } %} href="/n3">男士护肤</a></li>
+                    <li><a {% if(node && node.nid == 4) { %}class="current"{% } %} href="/n4">香水精油</a></li>
+                    <li><a {% if(node && node.nid == 5) { %}class="current"{% } %} href="/n5">洗发沐浴</a></li>
+                    <li><a {% if(node && node.nid == 6) { %}class="current"{% } %} href="/n6">美体瘦身</a></li>
+                </ul>
+            </div>
+        </div>
