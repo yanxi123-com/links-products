@@ -16,7 +16,7 @@ var schemas = {
     Link: {
         areaId: String,
         text: String,
-        href: String,
+        url: String,
         tbBrand: {type: Number, "default": 0},
         tbCat: {type: Number, "default": 0},
         addDate: { type: Date, "default": Date.now }
