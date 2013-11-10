@@ -28,6 +28,7 @@ var schemas = {
     },
     Node: {
         nid: Number,
+        title: String,
         areaIds: [String]
     }
 };

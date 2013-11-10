@@ -8,7 +8,7 @@ var express = require('express'),
     http = require('http'),
     fs = require('fs'),
     qiriError = require('./model/qiri-err'),
-    routes = require('./routes'),
+    routes = require('./routes/route'),
     accessLogfile = fs.createWriteStream(__dirname + '/var/logs/access.log', {flags: 'a'}),
     app = express(),
     path = require('path'),
@@ -42,14 +42,20 @@ app.configure(function() {
 app.get('/', routes.index);
 app.get('/n:id', routes.index);
 
+// management
+app.get('/manage', routes.manage);
+app.get('/manage/n:id', routes.manage);
+
 // 404
-app.use(function(req, res, next){
+app.use(function(req, res, next) {
     res.status(404);
-    res.render('error', {title: '页面不存在'});
+    res.render('error', {
+        title : '页面不存在'
+    });
 });
 
 app.locals({
-    nodeId: -1
+    node : null,
 });
 
 var server = http.createServer(app);

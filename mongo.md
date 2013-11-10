@@ -8,7 +8,7 @@ db.createCollection('areas');
 db.createCollection('links');
 ```
 
-### 闯进索引
+### 创建索引
 ```js
 db.nodes.ensureIndex( { nid: 1 }, {unique : true} );
 db.areas.ensureIndex( { nid: 1 } );
@@ -17,7 +17,8 @@ db.links.ensureIndex( { areaId: 1 } );
 
 ### 添加数据示例
 ```js
-db.nodes.insert({nid: 0, areas: []});
+db.nodes.insert({nid: 0, title:'首页', areas: []});
+
 db.areas.insert({title: '面部护肤热门品牌', links: []});
 db.areas.insert({title: '时尚彩妆品牌', links: []});
 db.links.insert({text: '文字文字', href: 'http://www.qiri.com/', addDate: Date.now() });

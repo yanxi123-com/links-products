@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>七日美容馆: 我们只推荐精品</title>
+        <title>{%= (node && node.nid > 0 && node.title) ? (node.title + ': ') : '' %}七日美容馆: 我们只推荐精品</title>
         <meta name="description" content="七日美容馆为你推荐精品护肤、彩妆、香水等产品，让你健康美丽每一天。" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -62,13 +62,13 @@
         <div class="navbar">
             <div class="container">
                 <ul>
-                    <li><a {% if(nodeId == 0) { %}class="current"{% } %} href="/">首页</a></li>
-                    <li><a {% if(nodeId == 1) { %}class="current"{% } %} href="/n1">面部护肤</a></li>
-                    <li><a {% if(nodeId == 2) { %}class="current"{% } %} href="/n2">时尚彩妆</a></li>
-                    <li><a {% if(nodeId == 3) { %}class="current"{% } %} href="/n3">男士护肤</a></li>
-                    <li><a {% if(nodeId == 4) { %}class="current"{% } %} href="/n4">香水精油</a></li>
-                    <li><a {% if(nodeId == 5) { %}class="current"{% } %} href="/n5">洗发沐浴</a></li>
-                    <li><a {% if(nodeId == 6) { %}class="current"{% } %} href="/n6">美体瘦身</a></li>
+                    <li><a {% if(node && node.nid == 0) { %}class="current"{% } %} href="/">首页</a></li>
+                    <li><a {% if(node && node.nid == 1) { %}class="current"{% } %} href="/n1">面部护肤</a></li>
+                    <li><a {% if(node && node.nid == 2) { %}class="current"{% } %} href="/n2">时尚彩妆</a></li>
+                    <li><a {% if(node && node.nid == 3) { %}class="current"{% } %} href="/n3">男士护肤</a></li>
+                    <li><a {% if(node && node.nid == 4) { %}class="current"{% } %} href="/n4">香水精油</a></li>
+                    <li><a {% if(node && node.nid == 5) { %}class="current"{% } %} href="/n5">洗发沐浴</a></li>
+                    <li><a {% if(node && node.nid == 6) { %}class="current"{% } %} href="/n6">美体瘦身</a></li>
                 </ul>
             </div>
         </div>
