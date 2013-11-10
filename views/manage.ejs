@@ -1,0 +1,28 @@
+{% include include/manage-header %}
+
+<style>
+    ul.links {float:left; padding:0; margin:0; font-size:14px}
+    ul.links li {float:left; list-style:none; width:190px; margin:0 0 10px}
+</style>
+<div class="container" style="min-height:300px">
+    {% areas.forEach(function(area) { %}
+        <h2>
+            {%= area.title %}
+            (<a href="">删</a> <a href="">改</a>)
+        </h2>
+        <div class="clearfix">
+        <ul class="links clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li>
+                    <a target="_blank" href="{%= link.href %}">{%= link.text %}</a>
+                    (<a href="">删</a> <a href="">改</a>)
+                </li>
+            {% }) %}
+            <li><a href="">++++++</a></li>
+        </ul>
+        </div>
+    {% }) %}
+    <h2>增加新区域 <a href="">++++++</a></h2>
+</div>
+
+{% include include/footer %}
