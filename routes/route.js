@@ -26,7 +26,7 @@ var getSortedObjects = function(objects, ids) {
 var getPage = function(view) {
     return function(req, res, next) {
         var nodeId = req.params.id || "0";
-        if (!nodeId.match(/^[0-6]$/)) {
+        if (!nodeId.match(/^[0-7]$/)) {
             return next();
         }
         var nid = parseInt(nodeId);
@@ -126,8 +126,10 @@ exports.operation = function(req, res, next) {
     if (!userId) {
         return next(new QiriError(404));
     }
-    if (!_.chain(management).functions().contains(req.body.action)) {
+
+    var action = req.body.action;
+    if (!_.chain(management).functions().contains(action).value()) {
         return next(new QiriError(404));
     }
-    management[req.body.action](req, res, next);
+    management[action](req, res, next);
 };

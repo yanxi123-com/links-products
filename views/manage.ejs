@@ -1,184 +1,21 @@
 {% include include/manage-header %}
 
-<script>
-$(function() {
-    $( "#new-link" ).dialog({
-        autoOpen: false,
-        height: 180,
-        width: 500,
-        modal: true,
-        buttons: {
-            "确定": function() {
-                var button = this;
-                var newLink = {
-                    text: $('#newLinkText').val(),
-                    url: $('#newLinkUrl').val(),
-                    areaId: $('#newLinkAreaId').val()
-                };
-                $.ajax('/manage/operation', {
-                    type: 'POST',
-                    data: {
-                        action: "addLink",
-                        newLink: newLink
-                    },
-                    dataType: 'json',
-                    success: function(json) {
-                        if (json.error) {
-                            return alert(json.error);
-                        }
-                        $( button ).dialog( "close" );
-                        location = document.location;
-                    }
-                });
-            },
-            "取消": function() {
-                $( this ).dialog( "close" );
-            }
-        },
-        close: function() {
-            
-        }
-    });
-    $('.new-link').click(function() {
-        $('#newLinkText').val('');
-        $('#newLinkUrl').val('');
-        $('#newLinkAreaId').val($(this).attr('data-area'));
-        $( "#new-link" ).dialog( "open" );
-    });
-
-    $( "#change-link" ).dialog({
-        autoOpen: false,
-        height: 180,
-        width: 500,
-        modal: true,
-        buttons: {
-            "确定": function() {
-                alert('button clicked');
-            },
-            "取消": function() {
-                $( this ).dialog( "close" );
-            }
-        },
-        close: function() {
-            
-        }
-    });
-    $('.change-link').click(function() {
-        $( "#change-link" ).dialog( "open" );
-    });
-
-    
-    $( "#delete-link" ).dialog({
-        resizable: false,
-        autoOpen: false,
-        height:180,
-        modal: true,
-        buttons: {
-            "删 除": function() {
-                $( this ).dialog( "close" );
-            },
-            "取 消": function() {
-                $( this ).dialog( "close" );
-            }
-        }
-    });
-    $('.delete-link').click(function() {
-        $( "#delete-link" ).dialog( "open" );
-    });
-    
-    $( "#new-area" ).dialog({
-        autoOpen: false,
-        height: 180,
-        width: 500,
-        modal: true,
-        buttons: {
-            "确定": function() {
-                alert('button clicked');
-            },
-            "取消": function() {
-                $( this ).dialog( "close" );
-            }
-        },
-        close: function() {
-            
-        }
-    });
-    $('.new-area').click(function() {
-        $( "#new-area" ).dialog( "open" );
-    });
-    
-    $( "#change-area" ).dialog({
-        autoOpen: false,
-        height: 180,
-        width: 500,
-        modal: true,
-        buttons: {
-            "确定": function() {
-                alert('button clicked');
-            },
-            "取消": function() {
-                $( this ).dialog( "close" );
-            }
-        },
-        close: function() {
-            
-        }
-    });
-    $('.change-area').click(function() {
-        $( "#change-area" ).dialog( "open" );
-    });
-    
-    $( "#delete-area" ).dialog({
-        resizable: false,
-        autoOpen: false,
-        height:180,
-        modal: true,
-        buttons: {
-            "取 消": function() {
-                $( this ).dialog( "close" );
-            }
-        }
-    });
-    $('.delete-area').click(function() {
-        $( "#delete-area" ).dialog( "open" );
-    });
-    
-    $('ul.links').sortable({
-        stop: function(e, ui) {
-            var $node = ui.item.parent();
-            var linkIds = $.map($node.children(), function(child) {
-                return $(child).attr('data-id');
-            });
-            $.ajax('/manage/operation', {
-                type: 'POST',
-                data: {
-                    action : "sortLink",
-                    areaId : $node.attr('data-area'),
-                    linkIds : linkIds
-                },
-                dataType: 'json',
-                success: function(json) {
-                }
-            });
-        }
-    });
-});
-</script>
-
 <div class="container" style="min-height:300px">
     {% areas.forEach(function(area) { %}
         <h2>
-            {%= area.title %}
+            <span id="title-{%= area.id %}">{%= area.title %}</span>
             <a class="new-link" data-area="{%= area.id %}" href="javascript:void(0)">
                 <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
-            <a class="delete-area" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
-            <a class="change-area" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+            {% if (area.links.length == 0) { %}
+            <a class="delete-area" data-area="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            {% } %}
+            <a class="change-area" data-area="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
         </h2>
         <div class="clearfix">
         <ul class="links" data-area="{%= area.id %}" >
             {% area.links.forEach(function(link) { %}
                 <li data-id="{%= link.id %}">
-                    <a target="_blank" href="{%= link.url %}">{%= link.text %}</a>
+                    <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
 		            <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
 		            <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
                 </li>
@@ -186,64 +23,69 @@ $(function() {
         </ul>
         </div>
     {% }) %}
+    <hr/>
     <h2>
             增加新区域 <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
     </h2>
+    <hr/>
+    <h2>更改区域顺序</h2>
+    <ul class="areas">
+        {% areas.forEach(function(area) { %}
+            <li data-id={%= area.id %}>{%= area.title %}</li>
+        {% }) %}
+    </ul>
 </div>
 
 <div id="new-link" title="创建新链接">
-    <form>
     <fieldset>
         <input type="hidden" id="newLinkAreaId" />
         <label for="text">文字</label>
         <input type="text" name="text" id="newLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label for="url">网址</label>
-        <input type="text" name="url" id="newLinkUrl" value="" class="text ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" name="url" id="newLinkUrl" class="text ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
-    </form>
 </div>
 
 <div id="change-link" title="修改链接">
-    <form>
     <fieldset>
+        <input type="hidden" id="changeLinkId" />
         <label for="text">文字</label>
-        <input type="text" name="text" id="text" class="ui-widget-content ui-corner-all" />
+        <input type="text" name="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label for="url">网址</label>
-        <input type="text" name="url" id="url" value="" class="text ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" name="url" id="changeLinkUrl" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
-    </form>
 </div>
 
 <div id="new-area" title="创建新区域">
     <hr class="space"/>
-    <form>
     <fieldset>
+        <input type="hidden" id="nid" value="{%= node.nid %}" />
         <label for="text">标题：</label>
-        <input type="text" name="text" id="text" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" name="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
-    </form>
 </div>
 
 <div id="change-area" title="修改区域标题">
     <hr class="space"/>
-    <form>
     <fieldset>
+        <input type="hidden" id="changeAreaId" />
         <label for="text">标题：</label>
-        <input type="text" name="text" id="text" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" name="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
-    </form>
 </div>
 
 <div id="delete-area" title="确认删除区域?">
+    <input type="hidden" id="deleteAreaId" />
     <p>
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-        此功能暂不提供。
+        删除后无法恢复，确定要删除整个区域吗？
     </p>
 </div>
 
 <div id="delete-link" title="确认删除链接?">
+    <input type="hidden" id="deleteLinkId" />
     <p>
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
         删除后无法恢复，确定要此链接吗？
