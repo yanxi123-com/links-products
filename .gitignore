@@ -1,7 +1,3 @@
-.project
-.settings
-config.js
-
 lib-cov
 *.seed
 *.log
@@ -17,3 +13,9 @@ results
 
 npm-debug.log
 node_modules
+
+/var
+.project
+.settings
+config.js
+*.md.html

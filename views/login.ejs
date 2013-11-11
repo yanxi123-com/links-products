@@ -1,0 +1,12 @@
+{% include include/manage-header %}
+
+<div class="container" style="min-height:300px">
+    <h2>请登录</h2>
+    <form action="/manage/login" method="post">
+	    <input name="password" type="password" class="ui-widget ui-widget-content ui-corner-all" />
+	    <hr class="space"/>
+	    <input type="submit" value="提  交" class="ui-button ui-widget ui-state-default ui-corner-all" />
+    </form>
+</div>
+
+{% include include/footer %}

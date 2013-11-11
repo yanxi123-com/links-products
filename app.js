@@ -38,13 +38,15 @@ app.configure(function() {
     app.use(qiriError.errorHandler);
 });
 
-// index
-app.get('/', routes.index);
-app.get('/n:id', routes.index);
-
 // management
 app.get('/manage', routes.manage);
 app.get('/manage/n:id', routes.manage);
+app.post('/manage/login', routes.login);
+app.post('/manage/operation', routes.operation);
+
+//index
+app.get('/', routes.index);
+app.get('/n:id', routes.index);
 
 // 404
 app.use(function(req, res, next) {

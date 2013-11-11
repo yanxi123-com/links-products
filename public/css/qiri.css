@@ -219,3 +219,7 @@ s, strike, del {
 	background-color:#E04C0E;
 }
 .footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
+
+
+ul.links, ul.areas {float:left; padding:0; margin:0; font-size:14px}
+ul.links li, ul.areas li {float:left; list-style:none; width:190px; margin:0 0 10px}

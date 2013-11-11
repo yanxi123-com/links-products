@@ -21,12 +21,12 @@ db.nodes.insert({nid: 0, title:'首页', areas: []});
 
 db.areas.insert({title: '面部护肤热门品牌', links: []});
 db.areas.insert({title: '时尚彩妆品牌', links: []});
-db.links.insert({text: '文字文字', href: 'http://www.qiri.com/', addDate: Date.now() });
-db.links.insert({text: '文字2', href: 'http://www.qiri.com/', addDate: Date.now() });
-db.links.insert({text: '文字3', href: 'http://www.qiri.com/', addDate: Date.now() });
-db.links.insert({text: '文字4', href: 'http://www.qiri.com/', addDate: Date.now() });
-db.links.insert({text: '文字5', href: 'http://www.qiri.com/', addDate: Date.now() });
-db.links.insert({text: '文字6', href: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字文字', url: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字2', url: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字3', url: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字4', url: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字5', url: 'http://www.qiri.com/', addDate: Date.now() });
+db.links.insert({text: '文字6', url: 'http://www.qiri.com/', addDate: Date.now() });
 
 db.nodes.update({nid: 0}, {$set: {areas: [] }});
 db.nodes.update({nid: 0}, {$push: {areas: "527e4677c535072a46155df3" }});
