@@ -6,8 +6,8 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{%= (node && node.nid > 0 && node.title) ? (node.title + ': ') : '' %}七日美容馆: 我们只推荐精品</title>
-        <meta name="description" content="七日美容馆为你推荐精品护肤、彩妆、香水等产品，让你健康美丽每一天。" />
+        <title>{%= (node && node.nid > 0 && node.title) ? (node.title + ': ') : '' %}七日美容保健馆: 我们只推荐精品</title>
+        <meta name="description" content="七日美容保健馆为你推荐精品护肤、彩妆、香水、保健品等产品，让你健康美丽每一天。" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" href="/css/normalize.css" />
@@ -27,7 +27,7 @@
     <body>
         <div class="container">
             <div class="span-9">
-                <a href="/" title="七日美容馆" target="_self"><img src="/img/logo-60.gif" border="0" alt="七日美容馆"></a>
+                <a href="/" title="七日美容保健馆" target="_self"><img src="/img/logo-60.gif" border="0" alt="七日美容保健馆"></a>
             </div>
             
             <div class="span-15 last">
@@ -67,6 +67,7 @@
                     <li><a {% if(node && node.nid == 4) { %}class="current"{% } %} href="/n4">香水精油</a></li>
                     <li><a {% if(node && node.nid == 5) { %}class="current"{% } %} href="/n5">洗发沐浴</a></li>
                     <li><a {% if(node && node.nid == 6) { %}class="current"{% } %} href="/n6">美体瘦身</a></li>
+                    <li><a {% if(node && node.nid == 7) { %}class="current"{% } %} href="/n7">保健品</a></li>
                 </ul>
             </div>
         </div>
