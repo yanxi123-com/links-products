@@ -1,3 +1,4 @@
+'use strict';
 $(function() {
     $("#new-link").dialog({
         autoOpen : false,
@@ -133,7 +134,7 @@ $(function() {
 
     $("#new-area").dialog({
         autoOpen : false,
-        height : 180,
+        height : 220,
         width : 500,
         modal : true,
         buttons : {
@@ -141,7 +142,8 @@ $(function() {
                 var button = this;
                 var newArea = {
                     nid : $('#nid').val(),
-                    title : $('#newAreaTitle').val()
+                    title : $('#newAreaTitle').val(),
+                    type :  $('input[name=newAreaType]:radio:checked').val()
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -174,7 +176,7 @@ $(function() {
 
     $("#change-area").dialog({
         autoOpen : false,
-        height : 180,
+        height : 260,
         width : 500,
         modal : true,
         buttons : {
@@ -182,7 +184,8 @@ $(function() {
                 var button = this;
                 var area = {
                     id : $('#changeAreaId').val(),
-                    title : $('#changeAreaTitle').val()
+                    title : $('#changeAreaTitle').val(),
+                    type : $('input[name=changeAreaType]:radio:checked').val() || $('#changeAreaType').html()
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -197,6 +200,7 @@ $(function() {
                         }
 
                         $('#title-' + area.id).html(area.title);
+                        $('.change-area[data-area=' + area.id + ']').attr('data-area-type', area.type);
                         $(button).dialog("close");
                     }
                 });
@@ -210,9 +214,12 @@ $(function() {
     });
     $('.change-area').click(function() {
         var areaId = $(this).attr('data-area');
+        var areaType = $(this).attr('data-area-type');
         $('#changeAreaId').val(areaId);
         $('#changeAreaTitle').val($('#title-' + areaId).html());
         $("#change-area").dialog("open");
+        $('#changeAreaType').html(areaType);
+        $('input[name=changeAreaType]').attr('checked', false);
     });
 
     $("#delete-area").dialog({

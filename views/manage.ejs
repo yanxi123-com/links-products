@@ -9,10 +9,11 @@
             {% if (area.links.length == 0) { %}
             <a class="delete-area" data-area="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
             {% } %}
-            <a class="change-area" data-area="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+            <a class="change-area" data-area="{%= area.id %}" data-area-type="{%= area.type %}" href="javascript:void(0)">
+                <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
         </h2>
         <div class="clearfix">
-        <ul class="links" data-area="{%= area.id %}" >
+        <ul class="links" data-area="{%= area.id %}">
             {% area.links.forEach(function(link) { %}
                 <li data-id="{%= link.id %}">
                     <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
@@ -62,8 +63,16 @@
     <hr class="space"/>
     <fieldset>
         <input type="hidden" id="nid" value="{%= node.nid %}" />
-        <label for="text">标题：</label>
+        <label>标题：</label>
         <input type="text" name="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>类型：</label>
+        <label for="newAreaTypeCategory">
+            <input type="radio" name="newAreaType" checked="checked" value="category" id="newAreaTypeCategory" />分类区域
+        </label> &nbsp;
+        <label for="newAreaTypeBrand">
+            <input type="radio" name="newAreaType" value="brand" id="newAreaTypeBrand" />品牌区域
+        </label>
     </fieldset>
 </div>
 
@@ -73,6 +82,16 @@
         <input type="hidden" id="changeAreaId" />
         <label for="text">标题：</label>
         <input type="text" name="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <span>类型：</span>
+        <span id="changeAreaType"></span><br/><br/>
+        <span>修改：</span>
+        <label for="changeAreaTypeCategory">
+            <input type="radio" name="changeAreaType" value="category" id="changeAreaTypeCategory" />分类区域
+        </label> &nbsp;
+        <label for="changeAreaTypeBrand">
+            <input type="radio" name="changeAreaType" value="brand" id="changeAreaTypeBrand" />品牌区域
+        </label>
     </fieldset>
 </div>
 
@@ -80,7 +99,7 @@
     <input type="hidden" id="deleteAreaId" />
     <p>
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-        删除后无法恢复，确定要删除整个区域吗？
+        <span>删除后无法恢复，确定要删除整个区域吗？</span>
     </p>
 </div>
 
@@ -88,7 +107,7 @@
     <input type="hidden" id="deleteLinkId" />
     <p>
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-        删除后无法恢复，确定要此链接吗？
+        <span>删除后无法恢复，确定要此链接吗？</span>
     </p>
 </div>
 

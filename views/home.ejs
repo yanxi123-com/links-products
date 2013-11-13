@@ -1,0 +1,48 @@
+{% include include/header %}
+
+<style>
+    .vertical {
+        background: url("/img/dotted-1x4.gif") repeat-y 255px 0;
+    }
+    ul.links li {width:110px}
+</style>
+<div class="container vertical" style="min-height:300px;">
+   <div class="span-6">
+    {% 
+        areas.forEach(function(area) {
+            if (area.type == 'category') { 
+    %}
+        <h2>{%= area.title %}</h2>
+        <div class="clearfix">
+        <ul class="links clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></li>
+            {% }) %}
+        </ul>
+        </div>
+    {%
+            }
+        }) 
+    %}
+    </div>
+    <div class="span-17 push-1 last">
+    {% 
+        areas.forEach(function(area) {
+            if (area.type == 'brand') { 
+    %}
+        <h2>{%= area.title %}</h2>
+        <div class="clearfix">
+        <ul class="links clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></li>
+            {% }) %}
+        </ul>
+        </div>
+    {%
+            }
+        }) 
+    %}
+    </div>
+</div>
+
+{% include include/footer %}

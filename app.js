@@ -45,8 +45,8 @@ app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);
 
 //index
-app.get('/', routes.index);
-app.get('/n:id', routes.index);
+app.get('/', routes.home);
+app.get('/n:id', routes.home);
 
 // 404
 app.use(function(req, res, next) {

@@ -45,7 +45,7 @@ var getPage = function(view) {
             areas : function(callback) {
                 Area.find({
                     nid : nid
-                }, "title linkIds", callback);
+                }, "title linkIds type", callback);
             },
             areaLinks : [ 'areas', function(callback, results) {
                 var areaIds = _(results.areas).map(function(area) {
@@ -69,6 +69,7 @@ var getPage = function(view) {
                         return {
                             id : area.id,
                             title : area.title,
+                            type: area.type,
                             linkIds : area.linkIds,
                             links : getSortedObjects(
                                     results.areaLinks[area.id], area.linkIds)
@@ -85,6 +86,10 @@ var getPage = function(view) {
 
 exports.index = function(req, res, next) {
     getPage('index')(req, res, next);
+};
+
+exports.home = function(req, res, next) {
+    getPage('home')(req, res, next);
 };
 
 exports.manage = function(req, res, next) {
