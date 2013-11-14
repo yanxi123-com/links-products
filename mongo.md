@@ -13,6 +13,7 @@ db.createCollection('links');
 db.nodes.ensureIndex( { nid: 1 }, {unique : true} );
 db.areas.ensureIndex( { nid: 1 } );
 db.links.ensureIndex( { areaId: 1 } );
+db.links.ensureIndex( { areaId: 1, text: 1 }, {unique : true} );
 ```
 
 ### 添加数据示例

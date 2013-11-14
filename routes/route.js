@@ -71,21 +71,23 @@ var getPage = function(view) {
             if (err) {
                 return next(err);
             }
-            var areas = _(results.areas).map(
-                    function(area) {
-                        return {
-                            id : area.id,
-                            title : area.title,
-                            type : area.type,
-                            linkIds : area.linkIds,
-                            links : getSortedObjects(
-                                    results.areaLinks[area.id], area.linkIds)
-                        };
-                    });
+            var areas = _(results.areas).map(function(area) {
+                return {
+                    id : area.id,
+                    title : area.title,
+                    type : area.type,
+                    linkIds : area.linkIds,
+                    links : getSortedObjects(results.areaLinks[area.id], area.linkIds)
+                };
+            });
             areas = getSortedObjects(areas, results.node.areaIds);
+            var linkNum = _(areas).reduce(function(meno, area) {
+                return meno + area.links.length;
+            }, 0);
             res.render(view, {
                 node : results.node,
-                areas : areas
+                areas : areas,
+                linkNum : linkNum
             });
         });
     };
@@ -119,6 +121,7 @@ exports.login = function(req, res, next) {
             signed : true
         });
     };
+
 
     if (getPwdMd5(password) == config.get('encryptedPwd')) {
         setLoginCookie(res, 1);

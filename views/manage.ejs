@@ -3,7 +3,7 @@
 <div class="container" style="min-height:300px">
     {% areas.forEach(function(area) { %}
         <h2>
-            <span id="title-{%= area.id %}">{%= area.title %}</span>
+            <span id="title-{%= area.id %}">{%= area.title %}</span> <span>({%= area.links.length %})</span>
             <a class="new-link" data-area="{%= area.id %}" href="javascript:void(0)">
                 <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
             {% if (area.links.length == 0) { %}
@@ -26,6 +26,19 @@
                 </li>
             {% }) %}
         </ul>
+        <ul class="links" data-area="{%= area.id %}">
+            {%
+                (area.links || []).forEach(function(link) {
+            %}
+                <li data-id="{%= link.id %}">
+                    <span>文字</span><input value="{%= link.text %}" onclick="this.select()" /><br/>
+                    <span>网址</span><input value="{%= link.url %}" onclick="this.select()" /><br/>
+                    <span>图片</span><input value="{%= link.image %}" onclick="this.select()" /><br/>
+                </li>
+            {%
+                }) 
+            %}
+        </ul>
         </div>
     {% }) %}
     <hr/>
@@ -34,11 +47,15 @@
     </h2>
     <hr/>
     <h2>更改区域顺序</h2>
+    <div class="clearfix">
     <ul class="areas">
         {% areas.forEach(function(area) { %}
             <li data-id={%= area.id %}>{%= area.title %}</li>
         {% }) %}
     </ul>
+    </div>
+    <hr/>
+    <h2>链接总数：{%= linkNum %}</h2>
 </div>
 
 <div id="new-link" title="创建新链接">
@@ -64,7 +81,7 @@
         <label>网址</label>
         <input type="text" name="url" id="changeLinkUrl" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
-        <label>网址</label>
+        <label>图片</label>
         <input type="text" name="image" id="changeLinkImage" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
 </div>
