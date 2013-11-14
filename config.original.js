@@ -4,7 +4,7 @@
 
 var config = {
     port : 3000,
-    mongodb : "mongodb://localhost/qiri?poolSize=10",
+    mongodb : "mongodb://localhost/dbname?poolSize=10",
     cookieSecret : "your secret for cookie",
     pwdSecret : "your secret for pwd",
     encryptedPwd : "encrypted password",

@@ -17,6 +17,7 @@ var schemas = {
         areaId: String,
         text: String,
         url: String,
+        image: String,
         tbBrand: {type: Number, "default": 0},
         tbCat: {type: Number, "default": 0},
         addDate: { type: Date, "default": Date.now }
@@ -24,7 +25,8 @@ var schemas = {
     Area: {
         nid: Number,
         title: String,
-        linkIds: [String]
+        linkIds: [String],
+        type: String
     },
     Node: {
         nid: Number,

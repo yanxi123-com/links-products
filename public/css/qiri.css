@@ -221,5 +221,13 @@ s, strike, del {
 .footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
 
 
-ul.links, ul.areas {float:left; padding:0; margin:0; font-size:14px}
-ul.links li, ul.areas li {float:left; list-style:none; width:190px; margin:0 0 10px}
+ul.links, ul.areas, ul.brands {float:left; padding:0; margin:0; font-size:14px}
+ul.links li, ul.areas li, ul.brands li {float:left; list-style:none; width:190px; margin:0 0 10px}
+
+.vertical {
+    background: url("/img/dotted-1x4.gif") repeat-y 255px 0;
+}
+ul.links li {width:111px}
+ul.brands li {width:111px}
+ul.brands li img {width:90px; height:45px}
+ul.brands li div.text {padding:12px 10px; border:1px solid #EEE; margin:0 10px 0 0; white-space:nowrap; overflow: hidden; text-align:center}

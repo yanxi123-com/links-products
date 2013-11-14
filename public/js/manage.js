@@ -1,7 +1,8 @@
+'use strict';
 $(function() {
     $("#new-link").dialog({
         autoOpen : false,
-        height : 180,
+        height : 220,
         width : 500,
         modal : true,
         buttons : {
@@ -10,6 +11,7 @@ $(function() {
                 var newLink = {
                     text : $('#newLinkText').val(),
                     url : $('#newLinkUrl').val(),
+                    image : $('#newLinkImage').val(),
                     areaId : $('#newLinkAreaId').val()
                 };
                 $.ajax('/manage/operation', {
@@ -39,58 +41,64 @@ $(function() {
     $('.new-link').click(function() {
         $('#newLinkText').val('');
         $('#newLinkUrl').val('');
+        $('#newLinkImage').val('');
         $('#newLinkAreaId').val($(this).attr('data-area'));
         $("#new-link").dialog("open");
     });
 
-    $("#change-link").dialog(
-            {
-                autoOpen : false,
-                height : 180,
-                width : 500,
-                modal : true,
-                buttons : {
-                    "确定" : function() {
-                        var button = this;
-                        var link = {
-                            id : $('#changeLinkId').val(),
-                            text : $('#changeLinkText').val(),
-                            url : $('#changeLinkUrl').val()
-                        };
-                        $.ajax('/manage/operation', {
-                            type : 'POST',
-                            data : {
-                                action : "changeLink",
-                                link : link
-                            },
-                            dataType : 'json',
-                            success : function(json) {
-                                if (json.error) {
-                                    return alert(json.error);
-                                }
-                                var $link = $('li[data-id=' + link.id + ']')
-                                        .find('.current-link');
-                                $link.html(link.text);
-                                $link.attr('href', link.url);
-                                $(button).dialog("close");
-                            }
-                        });
+    $("#change-link").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var link = {
+                    id : $('#changeLinkId').val(),
+                    text : $('#changeLinkText').val(),
+                    url : $('#changeLinkUrl').val(),
+                    image : $('#changeLinkImage').val()
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "changeLink",
+                        link : link
                     },
-                    "取消" : function() {
-                        $(this).dialog("close");
-                    }
-                },
-                close : function() {
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        var $li = $('li[data-id=' + link.id + ']');
+                        var $link = $li.find('.current-link');
+                        var $image = $li.find('.link-image');
+                        $link.html(link.text);
+                        $link.attr('href', link.url);
+                        $image.attr('src', link.image);
 
-                }
-            });
+                        $(button).dialog("close");
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
     $('.change-link').click(function() {
         var $li = $(this).parent();
         var $link = $li.find('.current-link');
         var linkId = $li.attr('data-id');
+        var $image = $li.find('.link-image');
         $('#changeLinkId').val(linkId);
         $('#changeLinkText').val($link.html());
         $('#changeLinkUrl').val($link.attr('href'));
+        $('#changeLinkImage').val($image.attr('src'));
         $("#change-link").dialog("open");
     });
 
@@ -133,7 +141,7 @@ $(function() {
 
     $("#new-area").dialog({
         autoOpen : false,
-        height : 180,
+        height : 220,
         width : 500,
         modal : true,
         buttons : {
@@ -141,7 +149,8 @@ $(function() {
                 var button = this;
                 var newArea = {
                     nid : $('#nid').val(),
-                    title : $('#newAreaTitle').val()
+                    title : $('#newAreaTitle').val(),
+                    type :  $('input[name=newAreaType]:radio:checked').val()
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -174,7 +183,7 @@ $(function() {
 
     $("#change-area").dialog({
         autoOpen : false,
-        height : 180,
+        height : 260,
         width : 500,
         modal : true,
         buttons : {
@@ -182,7 +191,8 @@ $(function() {
                 var button = this;
                 var area = {
                     id : $('#changeAreaId').val(),
-                    title : $('#changeAreaTitle').val()
+                    title : $('#changeAreaTitle').val(),
+                    type : $('input[name=changeAreaType]:radio:checked').val() || $('#changeAreaType').html()
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -197,6 +207,7 @@ $(function() {
                         }
 
                         $('#title-' + area.id).html(area.title);
+                        $('.change-area[data-area=' + area.id + ']').attr('data-area-type', area.type);
                         $(button).dialog("close");
                     }
                 });
@@ -210,9 +221,12 @@ $(function() {
     });
     $('.change-area').click(function() {
         var areaId = $(this).attr('data-area');
+        var areaType = $(this).attr('data-area-type');
         $('#changeAreaId').val(areaId);
         $('#changeAreaTitle').val($('#title-' + areaId).html());
         $("#change-area").dialog("open");
+        $('#changeAreaType').html(areaType);
+        $('input[name=changeAreaType]').attr('checked', false);
     });
 
     $("#delete-area").dialog({

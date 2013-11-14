@@ -70,7 +70,8 @@ exports.changeLink = function(req, res, next) {
         updateLink : function(callback) {
             Link.findByIdAndUpdate(link.id, {
                 text : link.text,
-                url : link.url
+                url : link.url,
+                image : link.image
             }, callback);
         }
     }, function(err, results) {
@@ -83,11 +84,11 @@ exports.changeLink = function(req, res, next) {
 
 exports.changeArea = function(req, res, next) {
     var area = req.body.area;
-
     async.auto({
         updateArea : function(callback) {
             Area.findByIdAndUpdate(area.id, {
-                title : area.title
+                title : area.title,
+                type : area.type
             }, callback);
         }
     }, function(err, results) {

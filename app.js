@@ -44,9 +44,8 @@ app.get('/manage/n:id', routes.manage);
 app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);
 
-//index
-app.get('/', routes.index);
-app.get('/n:id', routes.index);
+//home
+app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.home);
 
 // 404
 app.use(function(req, res, next) {
