@@ -23,13 +23,20 @@ var getSortedObjects = function(objects, ids) {
     });
 };
 
+var getNid = function(nodeName) {
+    return {
+        home : 0,
+        skincare : 1,
+        makeup : 2,
+        men : 3,
+        perfume : 4,
+        health : 7
+    }[nodeName];
+};
+
 var getPage = function(view) {
     return function(req, res, next) {
-        var nodeId = req.params.id || "0";
-        if (!nodeId.match(/^[0-7]$/)) {
-            return next();
-        }
-        var nid = parseInt(nodeId);
+        var nid = req.params.nid;
 
         async.auto({
             node : function(callback) {
@@ -69,7 +76,7 @@ var getPage = function(view) {
                         return {
                             id : area.id,
                             title : area.title,
-                            type: area.type,
+                            type : area.type,
                             linkIds : area.linkIds,
                             links : getSortedObjects(
                                     results.areaLinks[area.id], area.linkIds)
@@ -84,17 +91,16 @@ var getPage = function(view) {
     };
 };
 
-exports.index = function(req, res, next) {
-    getPage('index')(req, res, next);
-};
-
 exports.home = function(req, res, next) {
+    var nodeName = req.params[0] || 'home';
+    req.params.nid = getNid(nodeName);
     getPage('home')(req, res, next);
 };
 
 exports.manage = function(req, res, next) {
     var userId = req.signedCookies.userId;
     if (userId) {
+        req.params.nid = req.params.id || "0";
         getPage('manage')(req, res, next);
     } else {
         res.render("login");
@@ -113,9 +119,6 @@ exports.login = function(req, res, next) {
             signed : true
         });
     };
-
-    // console.log("password=" + password);
-    // console.log("pwdMd5=" + getPwdMd5(password));
 
     if (getPwdMd5(password) == config.get('encryptedPwd')) {
         setLoginCookie(res, 1);

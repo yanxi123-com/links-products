@@ -70,7 +70,8 @@ exports.changeLink = function(req, res, next) {
         updateLink : function(callback) {
             Link.findByIdAndUpdate(link.id, {
                 text : link.text,
-                url : link.url
+                url : link.url,
+                image : link.image
             }, callback);
         }
     }, function(err, results) {

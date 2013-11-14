@@ -19,6 +19,10 @@
                     <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
 		            <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
 		            <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+                    {% if (link.image) { %}
+                        <br/>
+                        <img class="link-image" src="{%= link.image %}"/>
+                    {% } %}
                 </li>
             {% }) %}
         </ul>
@@ -45,17 +49,23 @@
         <br/><br/>
         <label for="url">网址</label>
         <input type="text" name="url" id="newLinkUrl" class="text ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label for="image">图片</label>
+        <input type="text" name="image" id="newLinkImage" class="text ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
 </div>
 
 <div id="change-link" title="修改链接">
     <fieldset>
         <input type="hidden" id="changeLinkId" />
-        <label for="text">文字</label>
+        <label>文字</label>
         <input type="text" name="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
-        <label for="url">网址</label>
+        <label>网址</label>
         <input type="text" name="url" id="changeLinkUrl" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>网址</label>
+        <input type="text" name="image" id="changeLinkImage" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
 </div>
 

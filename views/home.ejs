@@ -5,6 +5,9 @@
         background: url("/img/dotted-1x4.gif") repeat-y 255px 0;
     }
     ul.links li {width:110px}
+    ul.brands li {width:110px}
+    ul.brands li img {width:90px; height:45px}
+    ul.brands li div.text {padding:12px 10px; border:1px solid #EEE; margin:0 10px 0 0; white-space:nowrap; overflow: hidden; text-align:center}
 </style>
 <div class="container vertical" style="min-height:300px;">
    <div class="span-6">
@@ -32,9 +35,16 @@
     %}
         <h2>{%= area.title %}</h2>
         <div class="clearfix">
-        <ul class="links clearfix">
+        <ul class="brands clearfix">
             {% area.links.forEach(function(link) { %}
-                <li><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></li>
+                <li>
+                    {% if (link.image) { %}
+                        <a target="_blank" href="{%= link.url %}" title="{%= link.text %}">
+                            <img alt="{%= link.text %}" src="{%= link.image %}" /></a>
+                    {% } else { %}
+                        <div class="text"><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></div>
+                    {% }  %}
+                </li>
             {% }) %}
         </ul>
         </div>
