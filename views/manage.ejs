@@ -28,7 +28,7 @@
         </ul>
         <ul class="links" data-area="{%= area.id %}">
             {%
-                (area.links || []).forEach(function(link) {
+                (area.links && []).forEach(function(link) {
             %}
                 <li data-id="{%= link.id %}">
                     <span>文字</span><input value="{%= link.text %}" onclick="this.select()" /><br/>
