@@ -46,6 +46,7 @@ app.post('/manage/operation', routes.operation);
 
 //home
 app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.home);
+app.get('/brand/:brand', routes.brand);
 
 // 404
 app.use(function(req, res, next) {

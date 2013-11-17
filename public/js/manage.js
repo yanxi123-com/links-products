@@ -98,7 +98,14 @@ $(function() {
         $('#changeLinkId').val(linkId);
         $('#changeLinkText').val($link.html());
         $('#changeLinkUrl').val($link.attr('href'));
-        $('#changeLinkImage').val($image.attr('src'));
+        var src = $image.attr('src');
+        if ($image.attr('src')) {
+            var domain = '/img.qiri.com';
+            if (src.indexOf(domain) > -1) {
+                src = src.substring(src.indexOf(domain) + domain.length);
+            }
+        }
+        $('#changeLinkImage').val(src);
         $("#change-link").dialog("open");
     });
 

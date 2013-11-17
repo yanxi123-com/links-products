@@ -1,37 +1,42 @@
-
 /*
  * Copyright(c) qiri.com <yanxi@yanxi.com>
  */
- 
-var mongoose = require('mongoose'),
-     config = require('../config'), 
-     conn = mongoose
-        .createConnection(config.get('mongodb'), {
-            server : {
-                auto_reconnect : true
-            }
-        });
+
+var mongoose = require('mongoose');
+var config = require('../config');
+var conn = mongoose.createConnection(config.get('mongodb'), {
+    server : {
+        auto_reconnect : true
+    }
+});
 
 var schemas = {
-    Link: {
-        areaId: String,
-        text: String,
-        url: String,
-        image: String,
-        tbBrand: {type: Number, "default": 0},
-        tbCat: {type: Number, "default": 0},
-        addDate: { type: Date, "default": Date.now }
+    Link : {
+        areaId : String,
+        text : String,
+        url : String,
+        image : String,
+        addDate : {
+            type : Date,
+            "default" : Date.now
+        }
     },
-    Area: {
-        nid: Number,
-        title: String,
-        linkIds: [String],
-        type: String
+    Area : {
+        nid : Number,
+        title : String,
+        linkIds : [ String ],
+        type : String
     },
-    Node: {
-        nid: Number,
-        title: String,
-        areaIds: [String]
+    Node : {
+        nid : Number,
+        title : String,
+        areaIds : [ String ],
+    },
+    Page : {
+        type : String,
+        name : String,
+        title : String,
+        areaIds : [ String ],
     }
 };
 
@@ -48,4 +53,3 @@ var mongoSchemas = (function() {
 exports.getSchema = function(name) {
     return mongoSchemas[name];
 };
-
