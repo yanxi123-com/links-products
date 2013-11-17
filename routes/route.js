@@ -7,7 +7,7 @@ var async = require('async');
 var config = require('../config');
 var mongoUtils = require('../model/mongo-utils.js');
 var Area = mongoUtils.getSchema('Area');
-var Node = mongoUtils.getSchema('Node');
+var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
@@ -23,37 +23,22 @@ var getSortedObjects = function(objects, ids) {
     });
 };
 
-var getNid = function(nodeName) {
-    return {
-        home : 0,
-        skincare : 1,
-        makeup : 2,
-        men : 3,
-        perfume : 4,
-        health : 7
-    }[nodeName];
-};
-
-var getPage = function(view) {
+var getChannel = function(view) {
     return function(req, res, next) {
-        var nid = req.params.nid;
-
+        var channelName = req.params[0] || 'home';
+        
         async.auto({
-            node : function(callback) {
-                Node.findOne({
-                    nid : nid
-                }, "areaIds title nid", function(err, node) {
-                    if (!node) {
-                        return next(new QiriError(404));
-                    }
-                    callback(null, node);
-                });
+            page : function(callback) {
+                Page.findOne({
+                    type : "channel",
+                    name : channelName
+                }, callback);
             },
-            areas : function(callback) {
+            areas : ['page', function(callback, results) {
                 Area.find({
-                    nid : nid
+                    pageId : results.page.id
                 }, "title linkIds type", callback);
-            },
+            }],
             areaLinks : [ 'areas', function(callback, results) {
                 var areaIds = _(results.areas).map(function(area) {
                     return area.id;
@@ -80,12 +65,12 @@ var getPage = function(view) {
                     links : getSortedObjects(results.areaLinks[area.id], area.linkIds)
                 };
             });
-            areas = getSortedObjects(areas, results.node.areaIds);
+            areas = getSortedObjects(areas, results.page.areaIds);
             var linkNum = _(areas).reduce(function(meno, area) {
                 return meno + area.links.length;
             }, 0);
             res.render(view, {
-                node : results.node,
+                page : results.page,
                 areas : areas,
                 linkNum : linkNum
             });
@@ -94,16 +79,13 @@ var getPage = function(view) {
 };
 
 exports.home = function(req, res, next) {
-    var nodeName = req.params[0] || 'home';
-    req.params.nid = getNid(nodeName);
-    getPage('home')(req, res, next);
+    getChannel('home')(req, res, next);
 };
 
 exports.manage = function(req, res, next) {
     var userId = req.signedCookies.userId;
     if (userId) {
-        req.params.nid = req.params.id || "0";
-        getPage('manage')(req, res, next);
+        getChannel('manage')(req, res, next);
     } else {
         res.render("login");
     }
