@@ -144,3 +144,10 @@ exports.operation = function(req, res, next) {
     }
     management[action](req, res, next);
 };
+
+exports.brand = function(req, res, next) {
+    var brand = req.params.brand;
+    res.render("brand", {
+        brand : brand
+    });
+};
