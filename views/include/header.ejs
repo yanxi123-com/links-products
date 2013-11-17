@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{%= (node && node.nid > 0 && node.title) ? (node.title + ': ') : '' %}七日美容保健馆: 我们只推荐精品</title>
+        <title>{%= (page.name && page.name != 'home') ? (page.title + ': ') : '' %}七日美容保健馆: 我们只推荐精品</title>
         <meta name="description" content="七日美容保健馆为你推荐精品护肤、彩妆、香水、保健品等产品，让你健康美丽每一天。" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -58,12 +58,12 @@
         <div class="navbar">
             <div class="container">
                 <ul>
-                    <li><a {% if(node && node.nid == 0) { %}class="current"{% } %} href="/">首页</a></li>
-                    <li><a {% if(node && node.nid == 1) { %}class="current"{% } %} href="/skincare">面部护肤</a></li>
-                    <li><a {% if(node && node.nid == 2) { %}class="current"{% } %} href="/makeup">时尚彩妆</a></li>
-                    <li><a {% if(node && node.nid == 3) { %}class="current"{% } %} href="/men">男士护肤</a></li>
-                    <li><a {% if(node && node.nid == 4) { %}class="current"{% } %} href="/perfume">香水</a></li>
-                    <li><a {% if(node && node.nid == 7) { %}class="current"{% } %} href="/health">保健品</a></li>
+                    <li><a {% if(page.name == 'home') { %}class="current"{% } %} href="/">首页</a></li>
+                    <li><a {% if(page.name == 'skincare') { %}class="current"{% } %} href="/skincare">面部护肤</a></li>
+                    <li><a {% if(page.name == 'makeup') { %}class="current"{% } %} href="/makeup">时尚彩妆</a></li>
+                    <li><a {% if(page.name == 'men') { %}class="current"{% } %} href="/men">男士护肤</a></li>
+                    <li><a {% if(page.name == 'perfume') { %}class="current"{% } %} href="/perfume">香水</a></li>
+                    <li><a {% if(page.name == 'health') { %}class="current"{% } %} href="/health">保健品</a></li>
                 </ul>
             </div>
         </div>

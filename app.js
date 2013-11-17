@@ -39,8 +39,7 @@ app.configure(function() {
 });
 
 // management
-app.get('/manage', routes.manage);
-app.get('/manage/n:id', routes.manage);
+app.get(/^\/manage\/?(|skincare|makeup|men|perfume|health)\/?$/, routes.manage);
 app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);
 
@@ -57,7 +56,7 @@ app.use(function(req, res, next) {
 });
 
 app.locals({
-    node : null,
+    page : {},
 });
 
 var server = http.createServer(app);

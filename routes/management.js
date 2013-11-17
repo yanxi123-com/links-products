@@ -2,7 +2,7 @@ var _ = require('underscore');
 var async = require('async');
 var mongoUtils = require('../model/mongo-utils.js');
 var Area = mongoUtils.getSchema('Area');
-var Node = mongoUtils.getSchema('Node');
+var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
 var QiriError = require('../model/qiri-err');
 
@@ -106,10 +106,8 @@ exports.addArea = function(req, res, next) {
         newArea : function(callback) {
             Area.create(newArea, callback);
         },
-        updateNode : [ 'newArea', function(callback, results) {
-            Node.findOneAndUpdate({
-                nid : newArea.nid
-            }, {
+        updatePage : [ 'newArea', function(callback, results) {
+            Page.findByIdAndUpdate(newArea.pageId, {
                 $push : {
                     areaIds : results.newArea.id
                 }
@@ -139,14 +137,12 @@ exports.deleteArea = function(req, res, next) {
 };
 
 exports.sortArea = function(req, res, next) {
-    var nid = req.body.nid;
+    var pageId = req.body.pageId;
     var areaIds = req.body.areaIds;
 
     async.auto({
-        updateNode : function(callback) {
-            Node.findOneAndUpdate({
-                nid : nid
-            }, {
+        updatePage : function(callback) {
+            Page.findByIdAndUpdate(pageId, {
                 $set : {
                     areaIds : areaIds
                 }

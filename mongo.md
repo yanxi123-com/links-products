@@ -1,17 +1,11 @@
 Mongo DB
 ================
 
-### 创建 collection
-```js
-db.createCollection('nodes');
-db.createCollection('areas');
-db.createCollection('links');
-```
 
 ### 创建索引
 ```js
-db.nodes.ensureIndex( { nid: 1 }, {unique : true} );
-db.areas.ensureIndex( { nid: 1 } );
+db.pages.ensureIndex( { type: 1, name: 1 }, {unique : true} );
+db.areas.ensureIndex( { pageId: 1 } );
 db.links.ensureIndex( { areaId: 1 } );
 db.links.ensureIndex( { areaId: 1, text: 1 }, {unique : true} );
 ```

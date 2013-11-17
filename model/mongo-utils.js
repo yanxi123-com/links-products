@@ -22,15 +22,10 @@ var schemas = {
         }
     },
     Area : {
-        nid : Number,
         title : String,
         linkIds : [ String ],
-        type : String
-    },
-    Node : {
-        nid : Number,
-        title : String,
-        areaIds : [ String ],
+        type : String,
+        pageId : String,
     },
     Page : {
         type : String,

@@ -155,7 +155,7 @@ $(function() {
             "确定" : function() {
                 var button = this;
                 var newArea = {
-                    nid : $('#nid').val(),
+                    pageId : $('#pageId').val(),
                     title : $('#newAreaTitle').val(),
                     type :  $('input[name=newAreaType]:radio:checked').val()
                 };
@@ -304,7 +304,7 @@ $(function() {
                 type : 'POST',
                 data : {
                     action : "sortArea",
-                    nid : $('#nid').val(),
+                    pageId : $('#pageId').val(),
                     areaIds : areaIds
                 },
                 dataType : 'json',
