@@ -1,4 +1,5 @@
-{% include include/manage-header %}
+{% headTitle = page.title %}
+{% include ../include/manage-header %}
 
 <div class="container" style="min-height:300px">
     {% areas.forEach(function(area) { %}
@@ -17,8 +18,8 @@
             {% area.links.forEach(function(link) { %}
                 <li data-id="{%= link.id %}">
                     <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
-		            <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
-		            <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+                    <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+                    <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
                     {% if (link.image) { %}
                         <br/>
                         <img class="link-image" src="//img.qiri.com{%= link.image %}"/>
@@ -43,7 +44,9 @@
     {% }) %}
     <hr/>
     <h2>
-            增加新区域 <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+       <span>增加新区域</span> <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+       &nbsp; &nbsp; 链接总数： {%= linkNum %}
+       &nbsp; &nbsp; 修改页面： <a class="change-page" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
     </h2>
     <hr/>
     <h2>更改区域顺序</h2>
@@ -54,14 +57,12 @@
         {% }) %}
     </ul>
     </div>
-    <hr/>
-    <h2>链接总数：{%= linkNum %}</h2>
 </div>
 
 <div id="new-link" title="创建新链接">
     <fieldset>
         <input type="hidden" id="newLinkAreaId" />
-        <label for="text">文字</label>
+        <label>文字</label>
         <input type="text" name="text" id="newLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label for="url">网址</label>
@@ -107,7 +108,7 @@
     <hr class="space"/>
     <fieldset>
         <input type="hidden" id="changeAreaId" />
-        <label for="text">标题：</label>
+        <label>标题：</label>
         <input type="text" name="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
         <span>类型：</span>
@@ -138,4 +139,15 @@
     </p>
 </div>
 
-{% include include/footer %}
+<div id="change-page" title="修改页面信息">
+    <hr class="space"/>
+    <fieldset>
+        <label>名称：</label>
+        <input type="text" name="text" value="{%= page.name %}" id="changePageName" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>标题：</label>
+        <input type="text" name="text" value="{%= page.title || '' %}" id="changePageTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+    </fieldset>
+</div>
+
+{% include ../include/footer %}

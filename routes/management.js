@@ -155,3 +155,23 @@ exports.sortArea = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.changePage = function(req, res, next) {
+    var page = req.body.page;
+
+    async.auto({
+        updatePage : function(callback) {
+            Page.findByIdAndUpdate(page.id, {
+                $set : {
+                    title : page.title,
+                    name : page.name,
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};

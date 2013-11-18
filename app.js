@@ -38,14 +38,16 @@ app.configure(function() {
     app.use(qiriError.errorHandler);
 });
 
-// management
-app.get(/^\/manage\/?(|skincare|makeup|men|perfume|health)\/?$/, routes.manage);
-app.post('/manage/login', routes.login);
-app.post('/manage/operation', routes.operation);
-
 //home
 app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.home);
 app.get('/brand/:brand', routes.brand);
+
+//management
+app.get(/^\/manage\/?(|home|skincare|makeup|men|perfume|health)\/?$/, routes.manage);
+app.post('/manage/login', routes.login);
+app.post('/manage/operation', routes.operation);
+app.get('/manage/upload', routes.upload);
+app.post('/manage/upload', routes.uploadFile);
 
 // 404
 app.use(function(req, res, next) {
@@ -57,6 +59,7 @@ app.use(function(req, res, next) {
 
 app.locals({
     page : {},
+    headTitle : ''
 });
 
 var server = http.createServer(app);
