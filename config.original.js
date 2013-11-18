@@ -8,6 +8,7 @@ var config = {
     cookieSecret : "your secret for cookie",
     pwdSecret : "your secret for pwd",
     encryptedPwd : "encrypted password",
+    uploadPath : "/your/upload/path",
 };
 
 exports.get = function(key) {

@@ -5,6 +5,8 @@
 var _ = require('underscore');
 var async = require('async');
 var config = require('../config');
+var fs = require('node-fs');
+var path = require('path');
 var mongoUtils = require('../model/mongo-utils.js');
 var Area = mongoUtils.getSchema('Area');
 var Page = mongoUtils.getSchema('Page');
@@ -23,10 +25,8 @@ var getSortedObjects = function(objects, ids) {
     });
 };
 
-var getChannel = function(view) {
+var getChannel = function(channelName, view) {
     return function(req, res, next) {
-        var channelName = req.params[0] || 'home';
-        
         async.auto({
             page : function(callback) {
                 Page.findOne({
@@ -79,15 +79,17 @@ var getChannel = function(view) {
 };
 
 exports.home = function(req, res, next) {
-    getChannel('home')(req, res, next);
+    var channelName = req.params[0] || 'home';
+    getChannel(channelName, 'channel')(req, res, next);
 };
 
 exports.manage = function(req, res, next) {
     var userId = req.signedCookies.userId;
     if (userId) {
-        getChannel('manage')(req, res, next);
+        var channelName = req.params[0] || 'manage';
+        getChannel(channelName, 'manage/channel')(req, res, next);
     } else {
-        res.render("login");
+        res.render("manage/login");
     }
 };
 
@@ -131,5 +133,41 @@ exports.brand = function(req, res, next) {
     var brand = req.params.brand;
     res.render("brand", {
         brand : brand
+    });
+};
+
+exports.upload = function(req, res, next) {
+    res.render("manage/upload", {
+        imageUrl : null
+    });
+};
+
+exports.uploadFile = function(req, res, next) {
+    var displayImage = req.files.displayImage;
+    if (displayImage.size == 0) {
+        return exports.upload(req, res, next);
+    }
+    
+    var now = new Date();
+    console.log(req.files);
+    var urlPath = "/" + now.getFullYear() + "/" + now.getMonth();
+    var dir = path.join(config.get('uploadPath'), urlPath);
+    var fileName = (now % (1000 * 3600 * 24))
+            + path.extname(displayImage.name);
+    async.series({
+        mkdirs : function(callback) {
+            fs.mkdir(dir, null, true, callback);
+        },
+        moveFile : function(callback) {
+            fs.rename(displayImage.path, path.join(dir, fileName),
+                    callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.render("manage/upload", {
+            imageUrl : urlPath + "/" + fileName
+        });
     });
 };

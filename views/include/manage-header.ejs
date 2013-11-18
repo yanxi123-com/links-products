@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{%= (page.name && page.name != 'home') ? (page.title + ': ') : '' %}七日美容保健馆: 我们只推荐精品</title>
+        <title>{%= headTitle %}</title>
         <meta name="description" content="七日美容保健馆为你推荐精品护肤、彩妆、香水、保健品等产品，让你健康美丽每一天。" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -65,7 +65,8 @@
         <div class="navbar">
             <div class="container">
                 <ul>
-                    <li><a {% if(page.name == 'home') { %}class="current"{% } %} href="/manage/">首页</a></li>
+                    <li><a {% if(page.name == 'manage') { %}class="current"{% } %} href="/manage/">管理</a></li>
+                    <li><a {% if(page.name == 'home') { %}class="current"{% } %} href="/manage/home">首页</a></li>
                     <li><a {% if(page.name == 'skincare') { %}class="current"{% } %} href="/manage/skincare">面部护肤</a></li>
                     <li><a {% if(page.name == 'makeup') { %}class="current"{% } %} href="/manage/makeup">时尚彩妆</a></li>
                     <li><a {% if(page.name == 'men') { %}class="current"{% } %} href="/manage/men">男士护肤</a></li>
