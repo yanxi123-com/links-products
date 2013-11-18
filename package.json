@@ -13,6 +13,7 @@
     "underscore": "*",
     "underscore.string": "*",
     "connect": "*",
-    "async": "*"
+    "async": "*",
+    "node-fs": "*"
   }
 }
