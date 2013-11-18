@@ -4,7 +4,7 @@ Mongo DB
 
 ### 创建索引
 ```js
-db.pages.ensureIndex( { type: 1, name: 1 }, {unique : true} );
+db.pages.ensureIndex( { name: 1 }, {unique : true} );
 db.areas.ensureIndex( { pageId: 1 } );
 db.links.ensureIndex( { areaId: 1 } );
 db.links.ensureIndex( { areaId: 1, text: 1 }, {unique : true} );

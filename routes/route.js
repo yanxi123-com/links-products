@@ -25,69 +25,87 @@ var getSortedObjects = function(objects, ids) {
     });
 };
 
-var getChannel = function(channelName, view) {
-    return function(req, res, next) {
-        async.auto({
-            page : function(callback) {
-                Page.findOne({
-                    type : "channel",
-                    name : channelName
-                }, callback);
-            },
-            areas : ['page', function(callback, results) {
-                Area.find({
-                    pageId : results.page.id
-                }, "title linkIds type", callback);
-            }],
-            areaLinks : [ 'areas', function(callback, results) {
-                var areaIds = _(results.areas).map(function(area) {
-                    return area.id;
-                });
-                var tasks = _(results.areas).map(function(area) {
-                    return function(cb) {
-                        Link.find({
-                            areaId : area.id
-                        }, cb);
-                    };
-                });
-                async.parallel(_(areaIds).object(tasks), callback);
-            } ]
-        }, function(err, results) {
-            if (err) {
-                return next(err);
+var getPageInfo = function(pageName, callback) {
+    async.auto({
+        page : function(cb) {
+            Page.findOne({
+                name : pageName
+            }, cb);
+        },
+        areas : [ 'page', function(cb, results) {
+            if (!results.page) {
+                return cb(new QiriError(404));
             }
-            var areas = _(results.areas).map(function(area) {
-                return {
-                    id : area.id,
-                    title : area.title,
-                    type : area.type,
-                    linkIds : area.linkIds,
-                    links : getSortedObjects(results.areaLinks[area.id], area.linkIds)
+            Area.find({
+                pageId : results.page.id
+            }, "title linkIds type", cb);
+        }],
+        areaLinks : [ 'areas', function(callback, results) {
+            var areaIds = _(results.areas).map(function(area) {
+                return area.id;
+            });
+            var tasks = _(results.areas).map(function(area) {
+                return function(cb) {
+                    Link.find({
+                        areaId : area.id
+                    }, cb);
                 };
             });
-            areas = getSortedObjects(areas, results.page.areaIds);
-            var linkNum = _(areas).reduce(function(meno, area) {
-                return meno + area.links.length;
-            }, 0);
-            res.render(view, {
-                page : results.page,
-                areas : areas,
-                linkNum : linkNum
-            });
+            async.parallel(_(areaIds).object(tasks), callback);
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return callback(err);
+        }
+        var areas = _(results.areas).map(function(area) {
+            return {
+                id : area.id,
+                title : area.title,
+                type : area.type,
+                linkIds : area.linkIds,
+                links : getSortedObjects(results.areaLinks[area.id], area.linkIds)
+            };
         });
-    };
+        areas = getSortedObjects(areas, results.page.areaIds);
+        var linkNum = _(areas).reduce(function(meno, area) {
+            return meno + area.links.length;
+        }, 0);
+        callback(null, {
+            page : results.page,
+            areas : areas,
+            linkNum : linkNum
+        });
+    });
 };
 
-exports.home = function(req, res, next) {
-    var channelName = req.params[0] || 'home';
-    getChannel(channelName, 'channel')(req, res, next);
+exports.channel = function(req, res, next) {
+    async.auto({
+        pageInfo : function(callback) {
+            var channelName = req.params[0] || 'home';
+            getPageInfo(channelName, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.render('channel', results.pageInfo);
+    });
 };
 
 exports.manage = function(req, res, next) {
     var userId = req.signedCookies.userId;
     if (userId) {
-        var channelName = req.params[0] || 'manage';
-        getChannel(channelName, 'manage/channel')(req, res, next);
+        async.auto({
+            pageInfo : function(callback) {
+                var pageName = req.params.page || 'manage';
+                getPageInfo(pageName, callback);
+            }
+        }, function(err, results) {
+            if (err) {
+                return next(err);
+            }
+            res.render('manage/page', results.pageInfo);
+        });
     } else {
         res.render("manage/login");
     }
@@ -147,21 +165,21 @@ exports.uploadFile = function(req, res, next) {
     if (displayImage.size == 0) {
         return exports.upload(req, res, next);
     }
-    
+
     var now = new Date();
-    var urlPath = "/" + now.getFullYear() + "/" + now.getMonth();
+    var urlPath = "/" + now.getFullYear() + "/" + (now.getMonth() + 1);
     var dir = path.join(config.get('uploadPath'), urlPath);
-    var fileName = (now % (1000 * 3600 * 24))
-            + path.extname(displayImage.name);
-    async.series({
+    var fileName = (now % (1000 * 3600 * 24)) + path.extname(displayImage.name);
+    async.auto({
         mkdirs : function(callback) {
             fs.mkdir(dir, 0777, true, callback);
         },
-        moveFile : function(callback) {
-            fs.readFile(displayImage.path, function(err, data) {
-                fs.writeFile(path.join(dir, fileName), data, callback);
-            });
-        }
+        fileData : [ 'mkdirs', function(callback) {
+            fs.readFile(displayImage.path, callback);
+        } ],
+        writeFile : [ 'fileData', function(callback, results) {
+            fs.writeFile(path.join(dir, fileName), results.fileData, callback);
+        } ]
     }, function(err, results) {
         if (err) {
             return next(err);
