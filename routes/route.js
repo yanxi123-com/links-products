@@ -149,7 +149,6 @@ exports.uploadFile = function(req, res, next) {
     }
     
     var now = new Date();
-    console.log(req.files);
     var urlPath = "/" + now.getFullYear() + "/" + now.getMonth();
     var dir = path.join(config.get('uploadPath'), urlPath);
     var fileName = (now % (1000 * 3600 * 24))
@@ -159,8 +158,9 @@ exports.uploadFile = function(req, res, next) {
             fs.mkdir(dir, null, true, callback);
         },
         moveFile : function(callback) {
-            fs.rename(displayImage.path, path.join(dir, fileName),
-                    callback);
+            fs.readFile(displayImage.path, function(err, data) {
+                fs.writeFile(path.join(dir, fileName), data, callback);
+            });
         }
     }, function(err, results) {
         if (err) {
