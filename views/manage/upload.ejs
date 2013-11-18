@@ -8,6 +8,11 @@
         <hr class="space"/>
         <input type="submit" value="提  交" class="ui-button ui-widget ui-state-default ui-corner-all" />
     </form>
+    {% if (imageUrl) { %}
+        <hr/>
+	    <input type="text" value="{%= imageUrl %}" onclick="this.select()" class="ui-widget-content ui-corner-all" style="width:200px" /><br/><br/>
+        <img src="//img.qiri.com{%= imageUrl %}"/>
+    {% } %}
 </div>
 
 {% include ../include/footer %}

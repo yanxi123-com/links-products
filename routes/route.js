@@ -137,27 +137,37 @@ exports.brand = function(req, res, next) {
 };
 
 exports.upload = function(req, res, next) {
-    res.render("manage/upload");
+    res.render("manage/upload", {
+        imageUrl : null
+    });
 };
 
 exports.uploadFile = function(req, res, next) {
+    var displayImage = req.files.displayImage;
+    if (displayImage.size == 0) {
+        return exports.upload(req, res, next);
+    }
+    
     var now = new Date();
-    var dir = path.join(config.get('uploadPath'), now.getFullYear().toString(),
-            now.getMonth().toString());
+    console.log(req.files);
+    var urlPath = "/" + now.getFullYear() + "/" + now.getMonth();
+    var dir = path.join(config.get('uploadPath'), urlPath);
+    var fileName = (now % (1000 * 3600 * 24))
+            + path.extname(displayImage.name);
     async.series({
         mkdirs : function(callback) {
             fs.mkdir(dir, null, true, callback);
         },
         moveFile : function(callback) {
-            var fileName = (now % (1000 * 3600 * 24))
-                    + path.extname(req.files.displayImage.name);
-            fs.rename(req.files.displayImage.path, path.join(dir, fileName),
+            fs.rename(displayImage.path, path.join(dir, fileName),
                     callback);
         }
     }, function(err, results) {
         if (err) {
             return next(err);
         }
-        res.render("manage/upload");
+        res.render("manage/upload", {
+            imageUrl : urlPath + "/" + fileName
+        });
     });
 };
