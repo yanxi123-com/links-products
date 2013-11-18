@@ -155,7 +155,7 @@ exports.uploadFile = function(req, res, next) {
             + path.extname(displayImage.name);
     async.series({
         mkdirs : function(callback) {
-            fs.mkdir(dir, null, true, callback);
+            fs.mkdir(dir, 0777, true, callback);
         },
         moveFile : function(callback) {
             fs.readFile(displayImage.path, function(err, data) {
