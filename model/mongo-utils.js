@@ -32,7 +32,24 @@ var schemas = {
         name : String,
         title : String,
         areaIds : [ String ],
-    }
+        categoryGroups : [ {
+            type : String,
+            title : String,
+            categoryIds : [ String ]
+        } ]
+    },
+    Category : { // uniq:[channel + type + name], [channel + type + title];
+        // url: /channel/[branch]/[prodType]-[efficacy]-[skinType]
+        channel : String,
+        type : String, // brand, efficacy, prodType, skinType;
+        name : String,
+        title : String,
+    },
+    Product : {
+        title : String,
+        image : String,
+        categoryIds : [ String ],
+    },
 };
 
 var mongoSchemas = (function() {

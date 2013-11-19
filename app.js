@@ -40,17 +40,16 @@ app.configure(function() {
 
 // home
 app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.channel);
-app.get('/brand/:brand', routes.brand);
+app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)/, routes.brand);
 
 // management
+app.get('/manage', routes.manage);
+app.get('/manage/category', routes.manageCategory);
+app.get('/manage/upload', routes.upload);
+
 app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);
-app.get('/manage/upload', routes.upload);
 app.post('/manage/upload', routes.uploadFile);
-
-// management page
-app.get('/manage', routes.manage);
-app.get('/manage/:page', routes.manage);
 
 // 404
 app.use(function(req, res, next) {

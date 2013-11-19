@@ -76,7 +76,7 @@ $(function() {
                         var $image = $li.find('.link-image');
                         $link.html(link.text);
                         $link.attr('href', link.url);
-                        $image.attr('src', link.image);
+                        $image.attr('src', '//img.qiri.com' + link.image);
 
                         $(button).dialog("close");
                     }

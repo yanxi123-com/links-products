@@ -4,6 +4,7 @@ var mongoUtils = require('../model/mongo-utils.js');
 var Area = mongoUtils.getSchema('Area');
 var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
+var Category = mongoUtils.getSchema('Category');
 var QiriError = require('../model/qiri-err');
 
 exports.addLink = function(req, res, next) {
@@ -175,3 +176,81 @@ exports.changePage = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.addCategory = function(req, res, next) {
+    var category = req.body.category;
+
+    async.auto({
+        category : function(callback) {
+            Category.create(category, callback);
+        },
+        updatePage : [ 'category', function(callback, results) {
+            var category = results.category;
+            Page.update({
+                type : 'channel',
+                name : category.channel,
+                'categoryGroups.type' : category.type
+            }, {
+                $push : {
+                    'categoryGroups.$.categoryIds' : category.id
+                }
+            }, callback);
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteCategory = function(req, res, next) {
+    var categoryId = req.body.categoryId;
+
+    async.auto({
+        category : function(callback) {
+            Category.findById(categoryId, callback);
+        },
+        deleteCategory : [ 'category', function(callback, results) {
+            Category.findByIdAndRemove(categoryId, callback);
+        } ],
+        updatePage : [ 'deleteCategory', function(callback, results) {
+            var category = results.category;
+            Page.update({
+                type : 'channel',
+                name : category.channel,
+                'categoryGroups.type' : category.type
+            }, {
+                $pull : {
+                    'categoryGroups.$.categoryIds' : categoryId
+                }
+            }, callback);
+        } ],
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.changeCategory = function(req, res, next) {
+    var category = req.body.category;
+
+    async.auto({
+        updateCategory : function(callback) {
+            Category.findByIdAndUpdate(category.id, {
+                $set : {
+                    title : category.title,
+                    name : category.name,
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+

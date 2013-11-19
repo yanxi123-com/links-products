@@ -221,8 +221,8 @@ s, strike, del {
 .footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
 
 
-ul.links, ul.areas, ul.brands {float:left; padding:0; margin:0; font-size:14px}
-ul.links li, ul.areas li, ul.brands li {float:left; list-style:none; width:190px; margin:0 0 10px}
+ul.links, ul.areas, ul.brands, ul.categories {float:left; padding:0; margin:0; font-size:14px}
+ul.links li, ul.areas li, ul.brands li, ul.categories li {float:left; list-style:none; width:190px; margin:0 0 10px}
 
 .vertical {
     background: url("/img/dotted-1x4.gif") repeat-y 255px 0;

@@ -1,0 +1,49 @@
+{% include include/header %}
+
+<div class="container vertical" style="min-height:300px;">
+   <div class="span-6">
+    {% 
+        areas.forEach(function(area) {
+            if (area.type == 'category') { 
+    %}
+        <h2>{%= area.title %}</h2>
+        <div class="clearfix">
+        <ul class="links clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></li>
+            {% }) %}
+        </ul>
+        </div>
+    {%
+            }
+        }) 
+    %}
+    </div>
+    <div class="span-17 push-1 last">
+    {% 
+        areas.forEach(function(area) {
+            if (area.type == 'brand') { 
+    %}
+        <h2>{%= area.title %}</h2>
+        <div class="clearfix">
+        <ul class="brands clearfix">
+            {% area.links.forEach(function(link) { %}
+                <li>
+                    {% if (link.image) { %}
+                        <a target="_blank" href="{%= link.url %}" title="{%= link.text %}">
+                            <img alt="{%= link.text %}" src="//img.qiri.com{%= link.image %}" /></a>
+                    {% } else { %}
+                        <div class="text"><a target="_blank" href="{%= link.url %}">{%= link.text %}</a></div>
+                    {% }  %}
+                </li>
+            {% }) %}
+        </ul>
+        </div>
+    {%
+            }
+        })
+    %}
+    </div>
+</div>
+
+{% include include/footer %}
