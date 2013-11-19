@@ -33,8 +33,8 @@ var schemas = {
         title : String,
         areaIds : [ String ],
         categoryGroups : [ {
-            type : String,
             title : String,
+            categoryType : String,
             categoryIds : [ String ]
         } ]
     },

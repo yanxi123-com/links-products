@@ -47,6 +47,50 @@ $(function() {
         $("#new-category").dialog("open");
     });
 
+
+    $("#new-categoryGroup").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var newCategoryGroup = {
+                    pageId : $('#pageId').val(),
+                    title : $('#newCategoryGroupTitle').val(),
+                    type : $('#newCategoryGroupType').val(),
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "addCategoryGroup",
+                        categoryGroup : newCategoryGroup
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.new-categoryGroup').click(function() {
+        $('#newCategoryGroupType').val('');
+        $('#newCategoryGroupTitle').val('');
+        $("#new-categoryGroup").dialog("open");
+    });
+    
 	$("#delete-category").dialog({
 	    resizable : false,
 	    autoOpen : false,
@@ -144,20 +188,15 @@ $(function() {
     <input type="hidden" id="categoryChannel" value="skincare" />
     <h2>护肤品分类管理</h2>
     {%
-        [
-            {name: 'brand', title: '品牌'},
-            {name: 'prodType', title: '产品类型'},
-            {name: 'efficacy', title: '功效'},
-            {name: 'skinType', title: '皮肤类型'},
-        ].forEach(function(type) {
+        page.categoryGroups.forEach(function(group) {
     %}
-        <h3>按{%= type.title %}
-	        <a class="new-category" data-type="{%= type.name %}" href="javascript:void(0)">
+        <h3>按{%= group.title %}
+	        <a class="new-category" data-type="{%= group.categoryType %}" href="javascript:void(0)">
 	            <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
 	    </h3>
 	    <div class="clearfix">
 	    <ul class="categories">
-	        {% (typeCategories[type.name] || []).forEach(function(category) { %}
+	        {% (typeCategories[group.categoryType] || []).forEach(function(category) { %}
 	            <li data-category-id="{%= category.id %}">
 	                <span class="current-category" data-category-name="{%= category.name %}">{%= category.title %}</span>
 	                <a class="delete-category" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
@@ -175,6 +214,13 @@ $(function() {
     </h2>
     <hr/>
     <h2>更改维度顺序</h2>
+    <ul class="groups">
+    {% page.categoryGroups.forEach(function(group) { %}
+    <li>
+        {%= group.title %}
+    </li>
+    {% }) %}
+    </ul>
 </div>
 
 <div id="change-category" title="修改类别">
@@ -207,6 +253,18 @@ $(function() {
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
         <span>删除后无法恢复，确定要此分类吗？</span>
     </p>
+</div>
+
+<div id="new-categoryGroup" title="创建新维度">
+    <hr class="space"/>
+    <fieldset>
+        <input type="hidden" id="pageId" value="{%= page.id %}" />
+        <label>标题：</label>
+        <input type="text" id="newCategoryGroupTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>类型：</label>
+        <input type="text" id="newCategoryGroupType" class="ui-widget-content ui-corner-all" style="width:90%" />
+    </fieldset>
 </div>
 
 {% include ../include/footer %}

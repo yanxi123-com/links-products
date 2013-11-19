@@ -189,7 +189,7 @@ exports.addCategory = function(req, res, next) {
             Page.update({
                 type : 'channel',
                 name : category.channel,
-                'categoryGroups.type' : category.type
+                'categoryGroups.categoryType' : category.type
             }, {
                 $push : {
                     'categoryGroups.$.categoryIds' : category.id
@@ -219,7 +219,7 @@ exports.deleteCategory = function(req, res, next) {
             Page.update({
                 type : 'channel',
                 name : category.channel,
-                'categoryGroups.type' : category.type
+                'categoryGroups.categoryType' : category.type
             }, {
                 $pull : {
                     'categoryGroups.$.categoryIds' : categoryId
@@ -254,3 +254,24 @@ exports.changeCategory = function(req, res, next) {
     });
 };
 
+exports.addCategoryGroup = function(req, res, next) {
+    var categoryGroup = req.body.categoryGroup;
+
+    async.auto({
+        updatePage : function(callback) {
+            Page.findByIdAndUpdate(categoryGroup.pageId, {
+                $push : {
+                    categoryGroups : {
+                        title : categoryGroup.title,
+                        categoryType : categoryGroup.type,
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
