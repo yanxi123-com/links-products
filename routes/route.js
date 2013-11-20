@@ -8,23 +8,16 @@ var config = require('../config');
 var fs = require('node-fs');
 var path = require('path');
 var mongoUtils = require('../model/mongo-utils.js');
+var QiriError = require('../model/qiri-err');
+var crypto = require('crypto');
+var management = require('./management');
+var utils = require('../model/utils');
+
 var Area = mongoUtils.getSchema('Area');
 var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
 var Category = mongoUtils.getSchema('Category');
-var QiriError = require('../model/qiri-err');
-var crypto = require('crypto');
-var management = require('./management');
 
-var getSortedObjects = function(objects, ids) {
-    var idIndexMap = {};
-    _(ids || []).each(function(id, index) {
-        idIndexMap[id] = index;
-    });
-    return _(objects).sortBy(function(object) {
-        return idIndexMap[object.id];
-    });
-};
 
 var getPageInfo = function(pageName, callback) {
     async.auto({
@@ -64,10 +57,10 @@ var getPageInfo = function(pageName, callback) {
                 title : area.title,
                 type : area.type,
                 linkIds : area.linkIds,
-                links : getSortedObjects(results.areaLinks[area.id], area.linkIds)
+                links : utils.sortById(results.areaLinks[area.id], area.linkIds)
             };
         });
-        areas = getSortedObjects(areas, results.page.areaIds);
+        areas = utils.sortById(areas, results.page.areaIds);
         var linkNum = _(areas).reduce(function(meno, area) {
             return meno + area.links.length;
         }, 0);
@@ -199,12 +192,19 @@ exports.manageCategory = function(req, res, next) {
             Category.find({channel : channel}, callback);
         }
     }, function(err, results) {
-        var groupCategories = _(results.categories).groupBy(function(category) {
+        var page = results.page;
+        var groups = _(results.categories).groupBy(function(category) {
             return category.group;
         });
+        var sortedGroups = {};
+        _(groups).each(function(categories, group) {
+            var categoryIds = utils.array2Object(page.categoryGroups, 'name')[group].categoryIds;
+            var sortedCategories = utils.sortById(categories, categoryIds);
+            sortedGroups[group] = sortedCategories;
+        });
         res.render("manage/category", {
-            groupCategories : groupCategories,
-            page : results.page
+            groupCategories : sortedGroups,
+            page : page
         });
     });
 };

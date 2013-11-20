@@ -222,6 +222,48 @@ $(function() {
         $('#deleteCategoryGroupId').val(groupId);
         $("#delete-categoryGroup").dialog("open");
     });
+
+    $('ul.groups').sortable({
+        stop : function(e, ui) {
+            var $ul = ui.item.parent();
+            var groupIds = $.map($ul.children(), function(child) {
+                return $(child).attr('data-group-id');
+            });
+            $.ajax('/manage/operation', {
+                type : 'POST',
+                data : {
+                    action : "sortCategoryGroup",
+                    pageId : $('#pageId').val(),
+                    groupIds : groupIds
+                },
+                dataType : 'json',
+                success : function(json) {
+                }
+            });
+        }
+    });
+
+    $('ul.categories').sortable({
+        stop : function(e, ui) {
+            var $ul = ui.item.parent();
+            var groupId = $ul.attr('data-group-id');
+            var categoryIds = $.map($ul.children(), function(child) {
+                return $(child).attr('data-category-id');
+            });
+            $.ajax('/manage/operation', {
+                type : 'POST',
+                data : {
+                    action : "sortCategory",
+                    pageId : $('#pageId').val(),
+                    groupId : groupId,
+                    categoryIds : categoryIds
+                },
+                dataType : 'json',
+                success : function(json) {
+                }
+            });
+        }
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
@@ -239,7 +281,7 @@ $(function() {
             {% } %}
 	    </h3>
 	    <div class="clearfix">
-	    <ul class="categories">
+	    <ul class="categories" data-group-id="{%= group.id %}">
 	        {% (groupCategories[group.name] || []).forEach(function(category) { %}
 	            <li data-category-id="{%= category.id %}">
 	                <span class="current-category" data-category-name="{%= category.name %}">{%= category.title %}</span>
@@ -260,7 +302,7 @@ $(function() {
     <h2>更改维度顺序</h2>
     <ul class="groups">
     {% page.categoryGroups.forEach(function(group) { %}
-    <li>
+    <li data-group-id="{%= group.id %}">
         {%= group.title %}
     </li>
     {% }) %}
