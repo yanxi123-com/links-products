@@ -202,7 +202,6 @@ exports.manageCategory = function(req, res, next) {
         var groupCategories = _(results.categories).groupBy(function(category) {
             return category.group;
         });
-        console.log(groupCategories);
         res.render("manage/category", {
             groupCategories : groupCategories,
             page : results.page
