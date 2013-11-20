@@ -7,6 +7,7 @@ var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
 var Category = mongoUtils.getSchema('Category');
 var QiriError = require('../model/qiri-err');
+var utils = require('../model/utils');
 
 exports.addLink = function(req, res, next) {
     var newLink = req.body.newLink;
@@ -285,6 +286,56 @@ exports.deleteCategoryGroup = function(req, res, next) {
             Page.findByIdAndUpdate(group.pageId, {
                 $pull : {
                     categoryGroups: {_id: new ObjectId(group.id)}
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.sortCategoryGroup = function(req, res, next) {
+    var pageId = req.body.pageId;
+    var groupIds = req.body.groupIds;
+
+    async.auto({
+        categoryGroups : function(callback) {
+            Page.findById(pageId, function(err, page) {
+                callback(err, page.categoryGroups);
+            });
+        },
+        updatePage : ['categoryGroups', function(callback, results) {
+            var sortedGroups = utils.sortById(results.categoryGroups, groupIds);
+            Page.findByIdAndUpdate(pageId, {
+                $set : {
+                    categoryGroups : sortedGroups
+                }
+            }, callback);
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.sortCategory = function(req, res, next) {
+    var pageId = req.body.pageId;
+    var groupId = req.body.groupId;
+    var categoryIds = req.body.categoryIds;
+
+    async.auto({
+        updatePage : function(callback) {
+            Page.update({
+                _id : new ObjectId(pageId),
+                'categoryGroups._id' : new ObjectId(groupId)
+            }, {
+                $set : {
+                    'categoryGroups.$.categoryIds' : categoryIds
                 }
             }, callback);
         }
