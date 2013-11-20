@@ -12,11 +12,6 @@ db.categories.ensureIndex( { channel: 1, type: 1, name : 1 }, {unique : true} );
 db.categories.ensureIndex( { channel: 1, type: 1, title : 1 }, {unique : true} );
 ```
 
-### 添加 categoryGroups
-```
-db.pages.update({categoryGroups:{$exists : false}}, {$set: {categoryGroups: []}}, {multi:1});
-```
-
 ### 添加数据示例
 ```js
 db.nodes.insert({nid: 0, title:'首页', areas: []});

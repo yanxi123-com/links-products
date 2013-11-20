@@ -199,11 +199,12 @@ exports.manageCategory = function(req, res, next) {
             Category.find({channel : channel}, callback);
         }
     }, function(err, results) {
-        var typeCategories = _(results.categories).groupBy(function(category) {
-            return category.type;
+        var groupCategories = _(results.categories).groupBy(function(category) {
+            return category.group;
         });
-        res.render("manage/category-" + channel, {
-            typeCategories : typeCategories,
+        console.log(groupCategories);
+        res.render("manage/category", {
+            groupCategories : groupCategories,
             page : results.page
         });
     });

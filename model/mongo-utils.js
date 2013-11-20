@@ -34,14 +34,14 @@ var schemas = {
         areaIds : [ String ],
         categoryGroups : [ {
             title : String,
-            categoryType : String,
+            name : String,
             categoryIds : [ String ]
         } ]
     },
     Category : { // uniq:[channel + type + name], [channel + type + title];
         // url: /channel/[branch]/[prodType]-[efficacy]-[skinType]
         channel : String,
-        type : String, // brand, efficacy, prodType, skinType;
+        group : String, // brand, efficacy, prodType, skinType;
         name : String,
         title : String,
     },

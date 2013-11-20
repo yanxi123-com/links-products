@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var async = require('async');
 var mongoUtils = require('../model/mongo-utils.js');
+var ObjectId = require('mongoose').Types.ObjectId;
 var Area = mongoUtils.getSchema('Area');
 var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
@@ -189,7 +190,7 @@ exports.addCategory = function(req, res, next) {
             Page.update({
                 type : 'channel',
                 name : category.channel,
-                'categoryGroups.categoryType' : category.type
+                'categoryGroups.name' : category.group
             }, {
                 $push : {
                     'categoryGroups.$.categoryIds' : category.id
@@ -219,7 +220,7 @@ exports.deleteCategory = function(req, res, next) {
             Page.update({
                 type : 'channel',
                 name : category.channel,
-                'categoryGroups.categoryType' : category.type
+                'categoryGroups.name' : category.group
             }, {
                 $pull : {
                     'categoryGroups.$.categoryIds' : categoryId
@@ -263,8 +264,27 @@ exports.addCategoryGroup = function(req, res, next) {
                 $push : {
                     categoryGroups : {
                         title : categoryGroup.title,
-                        categoryType : categoryGroup.type,
+                        name : categoryGroup.name,
                     }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteCategoryGroup = function(req, res, next) {
+    var group = req.body.group;
+
+    async.auto({
+        updatePage : function(callback) {
+            Page.findByIdAndUpdate(group.pageId, {
+                $pull : {
+                    categoryGroups: {_id: new ObjectId(group.id)}
                 }
             }, callback);
         }

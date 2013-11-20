@@ -12,7 +12,7 @@ $(function() {
                 var button = this;
                 var newCategory = {
                     channel : $('#categoryChannel').val(),
-                    type : $('#newCategoryType').val(),
+                    group : $('#newCategoryGroup').val(),
                     name : $('#newCategoryName').val(),
                     title : $('#newCategoryTitle').val()
                 };
@@ -41,7 +41,7 @@ $(function() {
         }
     });
     $('.new-category').click(function() {
-        $('#newCategoryType').val($(this).attr('data-type'));
+        $('#newCategoryGroup').val($(this).attr('data-group'));
         $('#newCategoryName').val('');
         $('#newCategoryTitle').val('');
         $("#new-category").dialog("open");
@@ -59,7 +59,7 @@ $(function() {
                 var newCategoryGroup = {
                     pageId : $('#pageId').val(),
                     title : $('#newCategoryGroupTitle').val(),
-                    type : $('#newCategoryGroupType').val(),
+                    name : $('#newCategoryGroupName').val(),
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -86,7 +86,7 @@ $(function() {
         }
     });
     $('.new-categoryGroup').click(function() {
-        $('#newCategoryGroupType').val('');
+        $('#newCategoryGroupName').val('');
         $('#newCategoryGroupTitle').val('');
         $("#new-categoryGroup").dialog("open");
     });
@@ -182,21 +182,65 @@ $(function() {
 
         $("#change-category").dialog("open");
     });
+    
+    $("#delete-categoryGroup").dialog({
+        resizable : false,
+        autoOpen : false,
+        height : 180,
+        modal : true,
+        buttons : {
+            "删 除" : function() {
+                var button = this;
+                var group = {
+                        id: $('#deleteCategoryGroupId').val(),
+                        pageId:$('#pageId').val()
+                }
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "deleteCategoryGroup",
+                        group : group
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+    
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取 消" : function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $('.delete-categoryGroup').click(function() {
+        var groupId = $(this).attr('data-group-id');
+        $('#deleteCategoryGroupId').val(groupId);
+        $("#delete-categoryGroup").dialog("open");
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
     <input type="hidden" id="categoryChannel" value="skincare" />
-    <h2>护肤品分类管理</h2>
+    <h2>{%= page.title %}分类管理</h2>
     {%
         page.categoryGroups.forEach(function(group) {
     %}
         <h3>按{%= group.title %}
-	        <a class="new-category" data-type="{%= group.categoryType %}" href="javascript:void(0)">
+	        <a class="new-category" data-group="{%= group.name %}" href="javascript:void(0)">
 	            <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+	        {% if (!groupCategories[group.name]) { %}
+                <a class="delete-categoryGroup" data-group-id="{%= group.id %}" href="javascript:void(0)">
+                    <span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            {% } %}
 	    </h3>
 	    <div class="clearfix">
 	    <ul class="categories">
-	        {% (typeCategories[group.categoryType] || []).forEach(function(category) { %}
+	        {% (groupCategories[group.name] || []).forEach(function(category) { %}
 	            <li data-category-id="{%= category.id %}">
 	                <span class="current-category" data-category-name="{%= category.name %}">{%= category.title %}</span>
 	                <a class="delete-category" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
@@ -237,7 +281,7 @@ $(function() {
 <div id="new-category" title="创建新链接">
     <fieldset>
         <label>类型</label>
-        <input type="text" id="newCategoryType" disabled="disabled" class="ui-widget-content ui-corner-all" />
+        <input type="text" id="newCategoryGroup" disabled="disabled" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label>名称</label>
         <input type="text" id="newCategoryName" class="text ui-widget-content ui-corner-all" style="width:90%" />
@@ -263,8 +307,16 @@ $(function() {
         <input type="text" id="newCategoryGroupTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
         <label>类型：</label>
-        <input type="text" id="newCategoryGroupType" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" id="newCategoryGroupName" class="ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
+</div>
+
+<div id="delete-categoryGroup" title="确认删除次维度">
+    <input type="hidden" id="deleteCategoryGroupId" />
+    <p>
+        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+        <span>删除后无法恢复，确定要此维度吗？</span>
+    </p>
 </div>
 
 {% include ../include/footer %}
