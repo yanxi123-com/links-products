@@ -63,7 +63,7 @@
     <fieldset>
         <input type="hidden" id="newLinkAreaId" />
         <label>文字</label>
-        <input type="text" name="text" id="newLinkText" class="ui-widget-content ui-corner-all" />
+        <input type="text" id="newLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label for="url">网址</label>
         <input type="text" name="url" id="newLinkUrl" class="text ui-widget-content ui-corner-all" style="width:90%" />
@@ -77,7 +77,7 @@
     <fieldset>
         <input type="hidden" id="changeLinkId" />
         <label>文字</label>
-        <input type="text" name="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
+        <input type="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
         <label>网址</label>
         <input type="text" name="url" id="changeLinkUrl" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
@@ -92,7 +92,7 @@
     <fieldset>
         <input type="hidden" id="pageId" value="{%= page.id %}" />
         <label>标题：</label>
-        <input type="text" name="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
         <label>类型：</label>
         <label for="newAreaTypeCategory">
@@ -109,7 +109,7 @@
     <fieldset>
         <input type="hidden" id="changeAreaId" />
         <label>标题：</label>
-        <input type="text" name="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
         <span>类型：</span>
         <span id="changeAreaType"></span><br/><br/>
@@ -143,10 +143,10 @@
     <hr class="space"/>
     <fieldset>
         <label>名称：</label>
-        <input type="text" name="text" value="{%= page.name %}" id="changePageName" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" value="{%= page.name %}" id="changePageName" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
         <label>标题：</label>
-        <input type="text" name="text" value="{%= page.title || '' %}" id="changePageTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <input type="text" value="{%= page.title || '' %}" id="changePageTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
 </div>
 

@@ -11,6 +11,7 @@ var mongoUtils = require('../model/mongo-utils.js');
 var Area = mongoUtils.getSchema('Area');
 var Page = mongoUtils.getSchema('Page');
 var Link = mongoUtils.getSchema('Link');
+var Category = mongoUtils.getSchema('Category');
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var management = require('./management');
@@ -78,34 +79,31 @@ var getPageInfo = function(pageName, callback) {
     });
 };
 
-exports.channel = function(req, res, next) {
-    async.auto({
-        pageInfo : function(callback) {
-            var channelName = req.params[0] || 'home';
-            getPageInfo(channelName, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.render('channel', results.pageInfo);
-    });
-};
-
-exports.manage = function(req, res, next) {
-    var userId = req.signedCookies.userId;
-    if (userId) {
+var venderPage = function(pageName, view) {
+    return function(req, res, next) {
         async.auto({
             pageInfo : function(callback) {
-                var pageName = req.params.page || 'manage';
                 getPageInfo(pageName, callback);
             }
         }, function(err, results) {
             if (err) {
                 return next(err);
             }
-            res.render('manage/page', results.pageInfo);
+            res.render(view, results.pageInfo);
         });
+    };
+};
+
+exports.channel = function(req, res, next) {
+    var channelName = req.params[0] || 'home';
+    venderPage(channelName, 'channel')(req, res, next);
+};
+
+exports.manage = function(req, res, next) {
+    var userId = req.signedCookies.userId;
+    if (userId) {
+        var pageName = req.query.page || 'manage';
+        venderPage(pageName, 'manage/page')(req, res, next);
     } else {
         res.render("manage/login");
     }
@@ -148,10 +146,8 @@ exports.operation = function(req, res, next) {
 };
 
 exports.brand = function(req, res, next) {
-    var brand = req.params.brand;
-    res.render("brand", {
-        brand : brand
-    });
+    var brand = req.params[1];
+    venderPage(brand, 'brand')(req, res, next);
 };
 
 exports.upload = function(req, res, next) {
@@ -186,6 +182,30 @@ exports.uploadFile = function(req, res, next) {
         }
         res.render("manage/upload", {
             imageUrl : urlPath + "/" + fileName
+        });
+    });
+};
+
+exports.manageCategory = function(req, res, next) {
+    var channel = req.query.channel;
+    async.auto({
+        page : function(callback) {
+            Page.findOne({
+                type : 'channel',
+                name : channel
+            }, callback);
+        },
+        categories : function(callback) {
+            Category.find({channel : channel}, callback);
+        }
+    }, function(err, results) {
+        var groupCategories = _(results.categories).groupBy(function(category) {
+            return category.group;
+        });
+        console.log(groupCategories);
+        res.render("manage/category", {
+            groupCategories : groupCategories,
+            page : results.page
         });
     });
 };

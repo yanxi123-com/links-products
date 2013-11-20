@@ -1,0 +1,322 @@
+{% headTitle = page.title + '分类' %}
+{% include ../include/manage-header %}
+<script>
+$(function() {
+    $("#new-category").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var newCategory = {
+                    channel : $('#categoryChannel').val(),
+                    group : $('#newCategoryGroup').val(),
+                    name : $('#newCategoryName').val(),
+                    title : $('#newCategoryTitle').val()
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "addCategory",
+                        category : newCategory
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.new-category').click(function() {
+        $('#newCategoryGroup').val($(this).attr('data-group'));
+        $('#newCategoryName').val('');
+        $('#newCategoryTitle').val('');
+        $("#new-category").dialog("open");
+    });
+
+
+    $("#new-categoryGroup").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var newCategoryGroup = {
+                    pageId : $('#pageId').val(),
+                    title : $('#newCategoryGroupTitle').val(),
+                    name : $('#newCategoryGroupName').val(),
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "addCategoryGroup",
+                        categoryGroup : newCategoryGroup
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.new-categoryGroup').click(function() {
+        $('#newCategoryGroupName').val('');
+        $('#newCategoryGroupTitle').val('');
+        $("#new-categoryGroup").dialog("open");
+    });
+    
+	$("#delete-category").dialog({
+	    resizable : false,
+	    autoOpen : false,
+	    height : 180,
+	    modal : true,
+	    buttons : {
+	        "删 除" : function() {
+	            var button = this;
+	            var categoryId = $('#deleteCategoryId').val();
+	            $.ajax('/manage/operation', {
+	                type : 'POST',
+	                data : {
+	                    action : "deleteCategory",
+	                    categoryId : categoryId
+	                },
+	                dataType : 'json',
+	                success : function(json) {
+	                    if (json.error) {
+	                        return alert(json.error);
+	                    }
+	
+	                    $('li[data-category-id=' + categoryId + ']').remove();
+	                    $(button).dialog("close");
+	                }
+	            });
+	        },
+	        "取 消" : function() {
+	            $(this).dialog("close");
+	        }
+	    }
+	});
+    $('.delete-category').click(function() {
+        var categoryId = $(this).parent().attr('data-category-id');
+        $('#deleteCategoryId').val(categoryId);
+        $("#delete-category").dialog("open");
+    });
+    
+    $("#change-category").dialog({
+        autoOpen : false,
+        height : 180,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var category = {
+                    id : $('#changeCategoryId').val(),
+                    name : $('#changeCategoryName').val(),
+                    title : $('#changeCategoryTitle').val()
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "changeCategory",
+                        category : category
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        var $li = $('li[data-category-id=' + category.id + ']');
+                        var $category = $li.find('.current-category');
+                        $category.attr('data-category-name', category.name);
+                        $category.html(category.title);
+
+                        $(button).dialog("close");
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.change-category').click(function() {
+        var $li = $(this).parent();
+        var categoryId = $li.attr('data-category-id');
+
+        var $category = $li.find('.current-category');
+        var categoryName = $category.attr('data-category-name');
+        var categoryTitle = $category.html();
+        $('#changeCategoryId').val(categoryId);
+        $('#changeCategoryName').val(categoryName);
+        $('#changeCategoryTitle').val(categoryTitle);
+
+        $("#change-category").dialog("open");
+    });
+    
+    $("#delete-categoryGroup").dialog({
+        resizable : false,
+        autoOpen : false,
+        height : 180,
+        modal : true,
+        buttons : {
+            "删 除" : function() {
+                var button = this;
+                var group = {
+                        id: $('#deleteCategoryGroupId').val(),
+                        pageId:$('#pageId').val()
+                }
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "deleteCategoryGroup",
+                        group : group
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+    
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取 消" : function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $('.delete-categoryGroup').click(function() {
+        var groupId = $(this).attr('data-group-id');
+        $('#deleteCategoryGroupId').val(groupId);
+        $("#delete-categoryGroup").dialog("open");
+    });
+});
+</script>
+<div class="container" style="min-height:300px">
+    <input type="hidden" id="categoryChannel" value="skincare" />
+    <h2>{%= page.title %}分类管理</h2>
+    {%
+        page.categoryGroups.forEach(function(group) {
+    %}
+        <h3>按{%= group.title %}
+	        <a class="new-category" data-group="{%= group.name %}" href="javascript:void(0)">
+	            <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+	        {% if (!groupCategories[group.name]) { %}
+                <a class="delete-categoryGroup" data-group-id="{%= group.id %}" href="javascript:void(0)">
+                    <span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            {% } %}
+	    </h3>
+	    <div class="clearfix">
+	    <ul class="categories">
+	        {% (groupCategories[group.name] || []).forEach(function(category) { %}
+	            <li data-category-id="{%= category.id %}">
+	                <span class="current-category" data-category-name="{%= category.name %}">{%= category.title %}</span>
+	                <a class="delete-category" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+	                <a class="change-category" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+	            </li>
+	        {% }) %}
+	    </ul>
+	    </div>
+    {%
+        })
+    %}
+    <hr/>
+    <h2>
+       <span>增加新维度</span> <a class="new-categoryGroup" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+    </h2>
+    <hr/>
+    <h2>更改维度顺序</h2>
+    <ul class="groups">
+    {% page.categoryGroups.forEach(function(group) { %}
+    <li>
+        {%= group.title %}
+    </li>
+    {% }) %}
+    </ul>
+</div>
+
+<div id="change-category" title="修改类别">
+    <fieldset>
+        <input type="hidden" id="changeCategoryId" />
+        <label>名称</label>
+        <input type="text" id="changeCategoryName" class="ui-widget-content ui-corner-all" />
+        <br/><br/>
+        <label>标题</label>
+        <input type="text" id="changeCategoryTitle" class="text ui-widget-content ui-corner-all" style="width:90%" />
+    </fieldset>
+</div>
+
+<div id="new-category" title="创建新链接">
+    <fieldset>
+        <label>类型</label>
+        <input type="text" id="newCategoryGroup" disabled="disabled" class="ui-widget-content ui-corner-all" />
+        <br/><br/>
+        <label>名称</label>
+        <input type="text" id="newCategoryName" class="text ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>标题</label>
+        <input type="text" id="newCategoryTitle" class="text ui-widget-content ui-corner-all" style="width:90%" />
+    </fieldset>
+</div>
+
+<div id="delete-category" title="确认删除分类?">
+    <input type="hidden" id="deleteCategoryId" />
+    <p>
+        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+        <span>删除后无法恢复，确定要此分类吗？</span>
+    </p>
+</div>
+
+<div id="new-categoryGroup" title="创建新维度">
+    <hr class="space"/>
+    <fieldset>
+        <input type="hidden" id="pageId" value="{%= page.id %}" />
+        <label>标题：</label>
+        <input type="text" id="newCategoryGroupTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>类型：</label>
+        <input type="text" id="newCategoryGroupName" class="ui-widget-content ui-corner-all" style="width:90%" />
+    </fieldset>
+</div>
+
+<div id="delete-categoryGroup" title="确认删除次维度">
+    <input type="hidden" id="deleteCategoryGroupId" />
+    <p>
+        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+        <span>删除后无法恢复，确定要此维度吗？</span>
+    </p>
+</div>
+
+{% include ../include/footer %}
