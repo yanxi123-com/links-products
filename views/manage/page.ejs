@@ -46,7 +46,11 @@
     <h2>
        <span>增加新区域</span> <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
        &nbsp; &nbsp; 链接总数： {%= linkNum %}
-       &nbsp; &nbsp; 修改页面： <a class="change-page" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+       &nbsp; &nbsp; 修改页面<a class="change-page" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+       {% if (page.type == 'channel') { %}
+	       &nbsp; &nbsp; 修改分类
+	       <a href="/manage/category?channel={%= page.name %}"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+       {% } %}
     </h2>
     <hr/>
     <h2>更改区域顺序</h2>
