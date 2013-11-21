@@ -258,7 +258,6 @@ exports.manageProducts = function(req, res, next) {
     }, function(err, results) {
         var page = results.page;
         var products = results.products;
-        console.log(products);
         res.render("manage/products", {
             page : page,
             products : products
