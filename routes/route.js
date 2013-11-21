@@ -12,12 +12,15 @@ var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var management = require('./management');
 var utils = require('../model/utils');
+var imageMagick = require('gm').subClass({
+    imageMagick : true
+});
 
 var Area = mongoUtils.getSchema('Area');
-var Page = mongoUtils.getSchema('Page');
-var Link = mongoUtils.getSchema('Link');
 var Category = mongoUtils.getSchema('Category');
-
+var Link = mongoUtils.getSchema('Link');
+var Page = mongoUtils.getSchema('Page');
+var Product = mongoUtils.getSchema('Product');
 
 var getPageInfo = function(pageName, callback) {
     async.auto({
@@ -72,6 +75,31 @@ var getPageInfo = function(pageName, callback) {
     });
 };
 
+var getGroupCategories = function(page, callback) {
+    var channel = page.name;
+    async.auto({
+        categories : function(callback) {
+            Category.find({
+                channel : channel
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return callback(err);
+        }
+        var groups = _(results.categories).groupBy(function(category) {
+            return category.group;
+        });
+        var sortedGroups = {};
+        _(groups).each(function(categories, group) {
+            var categoryIds = utils.array2Object(page.categoryGroups, 'name')[group].categoryIds;
+            var sortedCategories = utils.sortById(categories, categoryIds);
+            sortedGroups[group] = sortedCategories;
+        });
+        callback(null, sortedGroups);
+    });
+};
+
 var venderPage = function(pageName, view) {
     return function(req, res, next) {
         async.auto({
@@ -87,19 +115,50 @@ var venderPage = function(pageName, view) {
     };
 };
 
+var uploadFile = function(uploadPath, file, callback) {
+    if (file.size == 0) {
+        return callback(new QiriError('No file to upload.'));
+    }
+
+    var now = new Date();
+    var urlPath = "/" + now.getFullYear() + "/" + (now.getMonth() + 1);
+    var dir = path.join(uploadPath, urlPath);
+    var fileName = (now % (1000 * 3600 * 24)) + path.extname(file.name);
+    async.auto({
+        mkdirs : function(callback) {
+            fs.mkdir(dir, 0777, true, callback);
+        },
+        fileData : [ 'mkdirs', function(callback) {
+            fs.readFile(file.path, callback);
+        } ],
+        writeFile : [ 'fileData', function(callback, results) {
+            fs.writeFile(path.join(dir, fileName), results.fileData, callback);
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return callback(err);
+        }
+        var fileUrlPath = urlPath + "/" + fileName;
+        callback(null, fileUrlPath);
+    });
+};
+
 exports.channel = function(req, res, next) {
     var channelName = req.params[0] || 'home';
     venderPage(channelName, 'channel')(req, res, next);
 };
 
-exports.manage = function(req, res, next) {
-    var userId = req.signedCookies.userId;
-    if (userId) {
-        var pageName = req.query.page || 'manage';
-        venderPage(pageName, 'manage/page')(req, res, next);
-    } else {
-        res.render("manage/login");
+exports.checkLogin = function(req, res, next) {
+    if (req.path.indexOf('login') > -1 || req.signedCookies.userId) {
+        return next();
     }
+    
+    res.render("manage/login");
+};
+
+exports.manage = function(req, res, next) {
+    var pageName = req.query.page || 'manage';
+    venderPage(pageName, 'manage/page')(req, res, next);
 };
 
 exports.login = function(req, res, next) {
@@ -115,13 +174,12 @@ exports.login = function(req, res, next) {
         });
     };
 
-
     if (getPwdMd5(password) == config.get('encryptedPwd')) {
         setLoginCookie(res, 1);
         res.redirect('/manage');
         return;
     } else {
-        res.render("login");
+        res.render("manage/login");
     }
 };
 
@@ -150,31 +208,14 @@ exports.upload = function(req, res, next) {
 };
 
 exports.uploadFile = function(req, res, next) {
-    var displayImage = req.files.displayImage;
-    if (displayImage.size == 0) {
-        return exports.upload(req, res, next);
-    }
-
-    var now = new Date();
-    var urlPath = "/" + now.getFullYear() + "/" + (now.getMonth() + 1);
-    var dir = path.join(config.get('uploadPath'), urlPath);
-    var fileName = (now % (1000 * 3600 * 24)) + path.extname(displayImage.name);
+    var image = req.files.displayImage;
     async.auto({
-        mkdirs : function(callback) {
-            fs.mkdir(dir, 0777, true, callback);
-        },
-        fileData : [ 'mkdirs', function(callback) {
-            fs.readFile(displayImage.path, callback);
-        } ],
-        writeFile : [ 'fileData', function(callback, results) {
-            fs.writeFile(path.join(dir, fileName), results.fileData, callback);
-        } ]
-    }, function(err, results) {
-        if (err) {
-            return next(err);
+        fileUrlPath : function(callback) {
+            uploadFile(config.get('uploadPath'), image, callback);
         }
+    }, function(err, results) {
         res.render("manage/upload", {
-            imageUrl : urlPath + "/" + fileName
+            imageUrl : results.fileUrlPath
         });
     });
 };
@@ -188,23 +229,13 @@ exports.manageCategory = function(req, res, next) {
                 name : channel
             }, callback);
         },
-        categories : function(callback) {
-            Category.find({channel : channel}, callback);
-        }
+        groupCategories : ['page', function(callback, results){
+            getGroupCategories(results.page, callback);
+        }]
     }, function(err, results) {
-        var page = results.page;
-        var groups = _(results.categories).groupBy(function(category) {
-            return category.group;
-        });
-        var sortedGroups = {};
-        _(groups).each(function(categories, group) {
-            var categoryIds = utils.array2Object(page.categoryGroups, 'name')[group].categoryIds;
-            var sortedCategories = utils.sortById(categories, categoryIds);
-            sortedGroups[group] = sortedCategories;
-        });
         res.render("manage/category", {
-            groupCategories : sortedGroups,
-            page : page
+            groupCategories : results.groupCategories,
+            page : results.page
         });
     });
 };
@@ -217,11 +248,101 @@ exports.manageProducts = function(req, res, next) {
                 type : 'channel',
                 name : channel
             }, callback);
+        },
+        groupCategories : ['page', function(callback, results){
+            getGroupCategories(results.page, callback);
+        }],
+        products : function(callback) {
+            Product.find({channel: channel}, 'name image', callback);
         }
     }, function(err, results) {
         var page = results.page;
+        var products = results.products;
+        console.log(products);
         res.render("manage/products", {
-            page : page
+            page : page,
+            products : products
         });
+    });
+};
+
+exports.manageProduct = function(req, res, next) {
+    var prodId = req.query.id;
+    async.auto({
+        product : function(callback) {
+            Product.findById(prodId, callback);
+        },
+        page : ['product', function(callback, results) {
+            Page.findOne({
+                type : 'channel',
+                name : results.product.channel
+            }, callback);
+        }],
+        groupCategories : ['page', function(callback, results){
+            getGroupCategories(results.page, callback);
+        }]
+    }, function(err, results) {
+        res.render("manage/product", results);
+    });
+};
+
+exports.postProductImage = function(req, res, next) {
+    var prodId = req.body.prodId;
+    var image = req.files.image;
+    async.auto({
+        fileUrlPath : function(callback) {
+            var uploadPath = config.get('originProdPath');
+            uploadFile(uploadPath, image, callback);
+        },
+        uploadProd : [ 'fileUrlPath', function(callback, results) {
+            Product.findByIdAndUpdate(prodId, {
+                $set : {
+                    image : results.fileUrlPath
+                }
+            }, callback);
+        } ]
+    }, function(err, results) {
+        res.redirect("/manage/product?id=" + prodId);
+    });
+};
+
+exports.showProductImage = function(req, res, next) {
+    var imgPath = req.params[0];
+    var width = req.query.width;
+    var height = req.query.height;
+
+    var originPath = config.get('originProdPath');
+    var resizePath = config.get('resizeProdPath');
+    
+    var originFilePath = path.join(originPath, imgPath);
+    var resizeFilePath = path.join(resizePath, width + '-' + height, imgPath);
+    
+    if (!width && !height) {
+        res.sendfile(originFilePath);
+        return;
+    }
+
+    if (fs.existsSync(resizeFilePath)){
+        res.sendfile(resizeFilePath);
+        return;
+    }
+    
+    var dir = path.dirname(resizeFilePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, 0777, true);
+    }
+
+    async.auto({
+        resizeImage : function(callback) {
+            imageMagick(originFilePath)
+                .resize(width, height)
+                .noProfile()
+                .write(resizeFilePath, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.sendfile(resizeFilePath);
     });
 };

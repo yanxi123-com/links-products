@@ -1,0 +1,90 @@
+{% headTitle = product.name %}
+{% include ../include/manage-header %}
+<script>
+var updateBasic = function(key, value) {
+    
+};
+
+var updateProp = function(key, value) {
+    
+}
+
+$(function() {
+    $("#change-basic").dialog({
+        autoOpen : false,
+        height : 180,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var product = {
+                    id : $('#prodId').val(),
+                    key : $('#changeBasicKey').val(),
+                    value : $('#changeBasicValue').val()
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "changeProductBasic",
+                        product : product
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        var value = $('span[data-basic-key=' + product.key + ']').html(product.value);
+                        $(button).dialog("close");
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.change-basic').click(function() {
+        var key = $(this).attr('data-basic-key');
+        var value = $('span[data-basic-key=' + key + ']').html();
+        $('#changeBasicKey').val(key);
+        $('#changeBasicValue').val(value);
+        $("#change-basic").dialog("open");
+    });
+});
+</script>
+<div class="container" style="min-height:300px">
+    <input type="hidden" id="prodId" value="{%= product.id %}" />
+    <h2>
+        <span data-basic-key="name">{%= product.name %}</span>
+        <a class="change-basic" data-basic-key="name" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+    </h2>
+    
+    <div class="span-8">
+        {% if (product.image) { %}
+            <img src="/pimg{%= product.image %}?width=300&height=300" style="max-height:300px; max-width:300px" />
+        {% } %}
+        <hr class="space"/>
+        <form action="/manage/product-image" enctype="multipart/form-data" method="post">
+            <input type="hidden" name="prodId" value="{%= product.id %}" />
+	        <input type="file" name="image" class="ui-widget ui-widget-content ui-corner-all" style="width:200px"/>
+	        <input type="submit" value="上传" class="ui-button ui-widget ui-state-default ui-corner-all" />
+	    </form>
+    </div>
+</div>
+
+
+
+<div id="change-basic" title="修改基本属性">
+    <fieldset>
+    <p>
+        <input type="hidden" id="changeBasicKey" />
+        <input type="text" id="changeBasicValue" class="ui-widget-content ui-corner-all" style="width:90%" />
+    </p>
+    </fieldset>
+</div>
+
+{% include ../include/footer %}

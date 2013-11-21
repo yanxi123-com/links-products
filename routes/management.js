@@ -1,13 +1,16 @@
 var _ = require('underscore');
 var async = require('async');
 var mongoUtils = require('../model/mongo-utils.js');
-var ObjectId = require('mongoose').Types.ObjectId;
-var Area = mongoUtils.getSchema('Area');
-var Page = mongoUtils.getSchema('Page');
-var Link = mongoUtils.getSchema('Link');
-var Category = mongoUtils.getSchema('Category');
 var QiriError = require('../model/qiri-err');
 var utils = require('../model/utils');
+
+var ObjectId = require('mongoose').Types.ObjectId;
+
+var Area = mongoUtils.getSchema('Area');
+var Category = mongoUtils.getSchema('Category');
+var Page = mongoUtils.getSchema('Page');
+var Product = mongoUtils.getSchema('Product');
+var Link = mongoUtils.getSchema('Link');
 
 exports.addLink = function(req, res, next) {
     var newLink = req.body.newLink;
@@ -337,6 +340,40 @@ exports.sortCategory = function(req, res, next) {
                 $set : {
                     'categoryGroups.$.categoryIds' : categoryIds
                 }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.addProduct = function(req, res, next) {
+    var product = req.body.product;
+
+    async.auto({
+        addProduct : function(callback) {
+            Product.create(product, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.changeProductBasic = function(req, res, next) {
+    var product = req.body.product;
+    var update = {};
+    update[product.key] = product.value;
+    
+    async.auto({
+        updateProduct : function(callback) {
+            Product.findByIdAndUpdate(product.id, {
+                $set: update
             }, callback);
         }
     }, function(err, results) {

@@ -47,9 +47,21 @@ var schemas = {
     },
     Product : {
         channel : String,
-        title : String,
+        name : String,
         image : String,
+        listPrice : Number,
         categoryIds : [ String ],
+        venders : [ {
+            name : String,
+            prodId : String,
+            title : String,
+            price : Number,
+            url : String,
+        } ],
+        props : [{
+            name : String,
+            value : String,
+        }]
     },
 };
 
