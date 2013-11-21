@@ -9,6 +9,8 @@ var config = {
     pwdSecret : "your secret for pwd",
     encryptedPwd : "encrypted password",
     uploadPath : "/your/upload/path",
+    originProdPath : "/your/upload/path/origin",
+    resizeProdPath : "/your/upload/path/resize",
 };
 
 exports.get = function(key) {
