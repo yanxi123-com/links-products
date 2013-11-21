@@ -57,7 +57,7 @@ $(function() {
                 <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
                 {% if (product.image) { %}
                     <br/>
-                    <img class="link-image" src="//img.qiri.com{%= product.image %}.jpg"/>
+                    <img class="link-image" src="/pimg{%= product.image %}?width=200&height=200"/>
                 {% } %}
             </li>
         {% }) %}
