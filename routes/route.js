@@ -313,7 +313,7 @@ exports.showProductImage = function(req, res, next) {
 
     var originPath = config.get('originProdPath');
     var resizePath = config.get('resizeProdPath');
-    
+
     var originFilePath = path.join(originPath, imgPath);
     var resizeFilePath = path.join(resizePath, width + '-' + height, imgPath);
     
@@ -322,7 +322,7 @@ exports.showProductImage = function(req, res, next) {
         return;
     }
 
-    if (fs.existsSync(resizeFilePath)){
+    if (fs.existsSync(resizeFilePath)) {
         res.sendfile(resizeFilePath);
         return;
     }
@@ -335,6 +335,7 @@ exports.showProductImage = function(req, res, next) {
     async.auto({
         resizeImage : function(callback) {
             imageMagick(originFilePath)
+                .trim()
                 .resize(width, height)
                 .noProfile()
                 .write(resizeFilePath, callback);
