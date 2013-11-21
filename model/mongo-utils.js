@@ -39,13 +39,14 @@ var schemas = {
         } ]
     },
     Category : { // uniq:[channel + type + name], [channel + type + title];
-        // url: /channel/[branch]/[prodType]-[efficacy]-[skinType]
+        // url: /channel/brand/[prodType]-[efficacy]-[skinType]
         channel : String,
-        group : String, // brand, efficacy, prodType, skinType;
+        group : String,
         name : String,
         title : String,
     },
     Product : {
+        channel : String,
         title : String,
         image : String,
         categoryIds : [ String ],

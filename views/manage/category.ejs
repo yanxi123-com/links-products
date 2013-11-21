@@ -267,7 +267,7 @@ $(function() {
 });
 </script>
 <div class="container" style="min-height:300px">
-    <input type="hidden" id="categoryChannel" value="skincare" />
+    <input type="hidden" id="categoryChannel" value="{%= page.name %}" />
     <h2>{%= page.title %}分类管理</h2>
     {%
         page.categoryGroups.forEach(function(group) {

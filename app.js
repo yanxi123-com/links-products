@@ -46,6 +46,7 @@ app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)/, routes.brand);
 app.get('/manage', routes.manage);
 app.get('/manage/category', routes.manageCategory);
 app.get('/manage/upload', routes.upload);
+app.get('/manage/products', routes.manageProducts);
 
 app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);

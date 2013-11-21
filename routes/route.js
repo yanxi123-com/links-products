@@ -208,3 +208,20 @@ exports.manageCategory = function(req, res, next) {
         });
     });
 };
+
+exports.manageProducts = function(req, res, next) {
+    var channel = req.query.channel;
+    async.auto({
+        page : function(callback) {
+            Page.findOne({
+                type : 'channel',
+                name : channel
+            }, callback);
+        }
+    }, function(err, results) {
+        var page = results.page;
+        res.render("manage/products", {
+            page : page
+        });
+    });
+};
