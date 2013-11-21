@@ -41,15 +41,21 @@ app.configure(function() {
 // home
 app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.channel);
 app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)/, routes.brand);
+app.get(/^\/pimg\/(.*)$/, routes.showProductImage);
 
 // management
+app.all(/^\/manage\b/, routes.checkLogin);
+
 app.get('/manage', routes.manage);
 app.get('/manage/category', routes.manageCategory);
 app.get('/manage/upload', routes.upload);
+app.get('/manage/products', routes.manageProducts);
+app.get('/manage/product', routes.manageProduct);
 
 app.post('/manage/login', routes.login);
 app.post('/manage/operation', routes.operation);
 app.post('/manage/upload', routes.uploadFile);
+app.post('/manage/product-image', routes.postProductImage);
 
 // 404
 app.use(function(req, res, next) {

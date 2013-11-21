@@ -1,0 +1,77 @@
+{% headTitle = page.title + '商品管理' %}
+{% include ../include/manage-header %}
+<script>
+$(function() {
+    $("#new-product").dialog({
+        autoOpen : false,
+        height : 180,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var product = {
+                    channel : $('#newProdChannel').val(),
+                    name : $('#newProdName').val()
+                };
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "addProduct",
+                        product : product
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.new-product').click(function() {
+        $('#newProdName').val('');
+        $("#new-product").dialog("open");
+    });
+});
+</script>
+<div class="container" style="min-height:300px">
+    <input type="hidden" id="categoryChannel" value="{%= page.name %}" />
+    <h2>{%= page.title %}商品管理
+        <a class="new-product" href="javascript:void(0)">
+            <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+    </h2>
+    
+    <ul class="links">
+        {% products.forEach(function(product) { %}
+            <li>
+                <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
+                {% if (product.image) { %}
+                    <br/>
+                    <img class="link-image" src="//img.qiri.com{%= product.image %}.jpg"/>
+                {% } %}
+            </li>
+        {% }) %}
+    </ul>
+</div>
+
+<div id="new-product" title="创建新商品">
+    <fieldset>
+        <p>
+        <input type="hidden" id="newProdChannel" value="{%= page.name %}" />
+        <label>名称</label>
+        <input type="text" id="newProdName" class="ui-widget-content ui-corner-all" style="width:90%" />
+        </p>
+    </fieldset>
+</div>
+
+{% include ../include/footer %}
