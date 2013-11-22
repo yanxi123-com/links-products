@@ -33,7 +33,6 @@ app.configure(function() {
   
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public'), {maxAge: 1000 * 3600 * 24 * 30}));
-  
     app.use(qiriError.qiriErrorHandler);
     app.use(qiriError.errorHandler);
 });
@@ -44,18 +43,18 @@ app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)/, routes.brand);
 app.get(/^\/pimg\/(.*)$/, routes.showProductImage);
 
 // management
-app.all(/^\/manage\b/, routes.checkLogin);
+app.all(/^\/manage\b/, routes.manage.checkLogin);
 
-app.get('/manage', routes.manage);
-app.get('/manage/category', routes.manageCategory);
-app.get('/manage/upload', routes.upload);
-app.get('/manage/products', routes.manageProducts);
-app.get('/manage/product', routes.manageProduct);
+app.get('/manage', routes.manage.page);
+app.get('/manage/category', routes.manage.category);
+app.get('/manage/upload', routes.manage.upload);
+app.get('/manage/products', routes.manage.products);
+app.get('/manage/product', routes.manage.product);
 
-app.post('/manage/login', routes.login);
-app.post('/manage/operation', routes.operation);
-app.post('/manage/upload', routes.uploadFile);
-app.post('/manage/product-image', routes.postProductImage);
+app.post('/manage/login', routes.manage.login);
+app.post('/manage/operation', routes.manage.operation);
+app.post('/manage/upload', routes.manage.uploadFile);
+app.post('/manage/product-image', routes.manage.postProductImage);
 
 // 404
 app.use(function(req, res, next) {

@@ -58,10 +58,11 @@ var schemas = {
             price : Number,
             url : String,
         } ],
-        props : [{
+        props : [ {
             name : String,
             value : String,
-        }]
+        } ],
+        memo : String
     },
 };
 
@@ -75,6 +76,4 @@ var mongoSchemas = (function() {
     return result;
 }());
 
-exports.getSchema = function(name) {
-    return mongoSchemas[name];
-};
+exports.schemas = mongoSchemas;
