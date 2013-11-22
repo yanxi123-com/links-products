@@ -6,6 +6,8 @@ var s = require('../../model/schemas').schemas;
 var config = require('../../config');
 var funcs = require('../functions');
 var operation = require('./operation');
+var QiriError = require('../../model/qiri-err');
+var utils = require('../../model/utils');
 
 exports.checkLogin = function(req, res, next) {
     if (req.path.indexOf('login') > -1 || req.signedCookies.userId) {
@@ -98,8 +100,10 @@ exports.product = function(req, res, next) {
         }],
         groupCategories : ['page', function(callback, results){
             funcs.getGroupCategories(results.page, callback);
-        }]
+        } ]
     }, function(err, results) {
+        var categoryHash = utils.toHash(results.product.categoryIds, _.identity);
+        results['categoryIdHash'] = categoryHash;
         res.render("manage/product", results);
     });
 };

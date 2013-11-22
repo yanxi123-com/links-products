@@ -82,7 +82,7 @@ var getGroupCategories = function(page, callback) {
         });
         var sortedGroups = {};
         _(groups).each(function(categories, group) {
-            var categoryIds = utils.array2Object(page.categoryGroups, 'name')[group].categoryIds;
+            var categoryIds = utils.toHash(page.categoryGroups, 'name')[group].categoryIds;
             var sortedCategories = utils.sortById(categories, categoryIds);
             sortedGroups[group] = sortedCategories;
         });

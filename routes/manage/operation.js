@@ -377,3 +377,128 @@ exports.changeProductBasic = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.changeProductCategory = function(req, res, next) {
+    var prodId = req.body.prodId;
+    var addId = req.body.addId;
+    var removeId = req.body.removeId;
+
+    var tasks = [];
+    if (addId) {
+        tasks.push(function(callback) {
+            s.Product.findByIdAndUpdate(prodId, {
+                $addToSet : {
+                    categoryIds : addId
+                }
+            }, callback);
+        });
+    }
+    if (removeId) {
+        tasks.push(function(callback) {
+            s.Product.findByIdAndUpdate(prodId, {
+                $pull : {
+                    categoryIds : removeId
+                }
+            }, callback);
+        });
+    }
+
+    async.auto(tasks, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.addProductProp = function(req, res, next) {
+    var prodId = req.body.prodId;
+    var name = req.body.name;
+    var value = req.body.value;
+
+    async.auto([ function(callback) {
+        s.Product.findByIdAndUpdate(prodId, {
+            $push : {
+                props : {
+                    name : name,
+                    value : value
+                }
+            }
+        }, callback);
+    } ], function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.changeProductProp = function(req, res, next) {
+    var prop = req.body.prop;
+
+    async.auto([ function(callback) {
+        s.Product.update({
+            _id : new ObjectId(prop.prodId),
+            'props._id' : new ObjectId(prop.id)
+        }, {
+            $set : {
+                'props.$' : {
+                    _id : new ObjectId(prop.id),
+                    name : prop.name,
+                    value : prop.value
+                }
+            }
+        }, callback);
+    } ], function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteProductProp = function(req, res, next) {
+    var prop = req.body.prop;
+
+    async.auto([ function(callback) {
+        s.Product.findByIdAndUpdate(prop.prodId, {
+            $pull : {
+                props : {
+                    _id : new ObjectId(prop.id)
+                }
+            }
+        }, callback);
+    } ], function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.sortProductProp = function(req, res, next) {
+    var prodId = req.body.prodId;
+    var propIds = req.body.propIds;
+
+    async.auto({
+        props : function(callback) {
+            s.Product.findById(prodId, function(err, product) {
+                callback(err, product.props);
+            });
+        },
+        updatePage : ['props', function(callback, results) {
+            var sortedProps = utils.sortById(results.props, propIds);
+            console.log(sortedProps);
+            s.Product.findByIdAndUpdate(prodId, {
+                $set : {
+                    props : sortedProps
+                }
+            }, callback);
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};

@@ -54,10 +54,189 @@ $(function() {
         $('#changeBasicValue').val(value);
         $("#change-basic").dialog("open");
     });
+    
+    $('.select-category').click(function() {
+        var categoryId = $(this).data('category-id');
+        var ajaxUpdate = function(removeId, addId) {
+	        $.ajax('/manage/operation', {
+	            type : 'POST',
+	            data : {
+	                action : "changeProductCategory",
+	                prodId : $('#prodId').val(),
+	                removeId : removeId,
+	                addId : addId
+	            },
+	            dataType : 'json',
+	            success : function(json) {
+	                if (json.error) {
+	                    return alert(json.error);
+	                }
+	            }
+	        });
+        }
+        if ($(this).hasClass('ui-selected')) {
+            $(this).removeClass('ui-selected');
+            ajaxUpdate(categoryId, null);
+        } else {
+            $(this).addClass('ui-selected');
+            ajaxUpdate(null, categoryId);
+        }
+    });
+    
+    $("#new-prop").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "addProductProp",
+                        prodId : $('#prodId').val(),
+                        name: $('#newPropName').val(),
+                        value: $('#newPropValue').val()
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.new-prop').click(function() {
+        var key = $(this).attr('data-basic-key');
+        var value = $('span[data-basic-key=' + key + ']').html();
+        $('#newPropName').val('');
+        $('#newPropValue').val('');
+        $("#new-prop").dialog("open");
+    });
+    
+    $("#change-prop").dialog({
+        autoOpen : false,
+        height : 220,
+        width : 500,
+        modal : true,
+        buttons : {
+            "确定" : function() {
+                var button = this;
+                var prop = {
+                    id: $('#changePropId').val(),
+                    prodId: $('#prodId').val(),
+                    name : $('#changePropName').val(),
+                    value : $('#changePropValue').val()
+                }
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "changeProductProp",
+                        prop : prop
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取消" : function() {
+                $(this).dialog("close");
+            }
+        },
+        close : function() {
+
+        }
+    });
+    $('.change-prop').click(function() {
+        var $ul = $(this).parent();
+        var propId = $ul.data('prop-id');
+        $('#changePropId').val(propId);
+        $('#changePropName').val($ul.find('.prop-name').html());
+        $('#changePropValue').val($ul.find('.prop-value').html());
+        $("#change-prop").dialog("open");
+    });
+    
+    $("#delete-prop").dialog({
+        resizable : false,
+        autoOpen : false,
+        height : 180,
+        modal : true,
+        buttons : {
+            "删 除" : function() {
+                var button = this;
+                var prop = {
+                    id: $('#deletePropId').val(),
+                    prodId: $('#prodId').val()
+                }
+                $.ajax('/manage/operation', {
+                    type : 'POST',
+                    data : {
+                        action : "deleteProductProp",
+                        prop : prop
+                    },
+                    dataType : 'json',
+                    success : function(json) {
+                        if (json.error) {
+                            return alert(json.error);
+                        }
+    
+                        $(button).dialog("close");
+                        location = document.location;
+                    }
+                });
+            },
+            "取 消" : function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $('.delete-prop').click(function() {
+        var $ul = $(this).parent();
+        var propId = $ul.data('prop-id');
+        $('#deletePropId').val(propId);
+        $("#delete-prop").dialog("open");
+    });
+
+    $('ul.props').sortable({
+        stop : function(e, ui) {
+            var $ul = ui.item.parent();
+            var propIds = $.map($ul.children(), function(child) {
+                return $(child).data('prop-id');
+            });
+            $.ajax('/manage/operation', {
+                type : 'POST',
+                data : {
+                    action : "sortProductProp",
+                    prodId : $('#prodId').val(),
+                    propIds : propIds
+                },
+                dataType : 'json',
+                success : function(json) {
+                }
+            });
+        }
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
     <input type="hidden" id="prodId" value="{%= product.id %}" />
+    <input type="hidden" id="removeCategoryId" />
     <h2>
         <span data-basic-key="name">{%= product.name %}</span>
         <a class="change-basic" data-basic-key="name" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
@@ -74,9 +253,52 @@ $(function() {
 	        <input type="submit" value="上传" class="ui-button ui-widget ui-state-default ui-corner-all" />
 	    </form>
     </div>
+    
+    <div class="span-16 last" style="font-size:14px">
+        <h3>基本属性</h3>
+        <ul>
+            <li>定价: 
+	            <span data-basic-key="listPrice">{%= product.listPrice || '无' %}</span>
+	            <a class="change-basic" data-basic-key="listPrice" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+            </li>
+        </ul>
+        <div class="clear"></div>
+        <h3>分类信息</h3>
+	    {%
+	        page.categoryGroups.forEach(function(group) {
+	    %}
+	        <b>{%= group.title %}：</b>
+            {% (groupCategories[group.name] || []).forEach(function(category) { %}
+                   <span class="select-category {%= categoryIdHash[category.id] ? 'ui-selected' : '' %}"
+                        data-category-id="{%= category.id %}">{%= category.title %}</span> &nbsp;
+            {% }) %}
+            <br/><br/>
+	    {%
+	        })
+	    %}
+	    <h3>更多属性
+            <a class="new-prop" href="javascript:void(0)">
+                <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+        </h3>
+        <ul class="props">
+        {%
+            product.props.forEach(function(prop) {
+        %}
+            <li data-prop-id="{%= prop.id %}" style="width:100%; margin:5px 0">
+            <b><span class="prop-name">{%= prop.name %}</span>：</b>
+            <span class="prop-value">{%= prop.value %}</span>
+            <a class="delete-prop" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            <a class="change-prop" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+            </li>
+        {%
+            })
+        %}
+        </ul>
+        <div class="clear"></div>
+        <h3>购买链接</h3>
+    </div>
 </div>
-
-
+<hr class="space"/>
 
 <div id="change-basic" title="修改基本属性">
     <fieldset>
@@ -85,6 +307,37 @@ $(function() {
         <input type="text" id="changeBasicValue" class="ui-widget-content ui-corner-all" style="width:90%" />
     </p>
     </fieldset>
+</div>
+
+<div id="new-prop" title="创建新属性">
+    <hr class="space"/>
+    <fieldset>
+        <label>属性名</label>
+        <input type="text" id="newPropName" class="ui-widget-content ui-corner-all" style="width:85%" />
+        <br/><br/>
+        <label>属性值</label>
+        <input type="text" id="newPropValue" class="text ui-widget-content ui-corner-all" style="width:85%" />
+    </fieldset>
+</div>
+
+<div id="change-prop" title="修改属性">
+    <input type="hidden" id="changePropId" />
+    <hr class="space"/>
+    <fieldset>
+        <label>属性名</label>
+        <input type="text" id="changePropName" class="ui-widget-content ui-corner-all" style="width:85%" />
+        <br/><br/>
+        <label>属性值</label>
+        <input type="text" id="changePropValue" class="text ui-widget-content ui-corner-all" style="width:85%" />
+    </fieldset>
+</div>
+
+<div id="delete-prop" title="确认删除属性?">
+    <input type="hidden" id="deletePropId" />
+    <p>
+        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+        <span>删除后无法恢复，确定要此属性吗？</span>
+    </p>
 </div>
 
 {% include ../include/footer %}

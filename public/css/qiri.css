@@ -208,9 +208,9 @@ s, strike, del {
 
 
 /* Qiri */
+ul { font-size:14px; padding:0; margin:0; float:left;}
+li {float:left; list-style:none}
 .navbar {background-color:#FC763E; height:39px; margin:10px 0}
-.navbar ul { font-size:14px; padding:0; float:left; margin:0}
-.navbar ul li {float:left; list-style:none}
 .navbar a {
 	text-decoration:none; color:#FFF; padding:9px 23px 10px; font-weight:bold; height:20px; float:left;
 	border-left:1px solid #FC763E; border-right:1px solid #FC763E;
@@ -221,8 +221,7 @@ s, strike, del {
 .footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
 
 
-ul.links, ul.areas, ul.brands, ul.categories, ul.groups {float:left; padding:0; margin:0; font-size:14px}
-ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {float:left; list-style:none; width:190px; margin:0 0 10px}
+ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
 
 .vertical {
     background: url("/img/dotted-1x4.gif") repeat-y 255px 0;

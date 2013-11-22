@@ -62,7 +62,15 @@ var schemas = {
             name : String,
             value : String,
         } ],
-        memo : String
+        linkGroups : [ {
+            title : String,
+            type : String,
+            links : [ {
+                text : String,
+                url : String,
+                image : String
+            } ]
+        } ]
     },
 };
 
