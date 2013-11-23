@@ -232,6 +232,62 @@ $(function() {
             });
         }
     });
+    
+    $('.new-vender').click(function() {
+        var venderCode = $(this).data('vender-code');
+        var vpid = prompt('请输入商家商品ID', '');
+        if (!vpid) {
+            return;
+        }
+        var vender = {
+            prodId: $('#prodId').val(),
+            code : venderCode,
+            vpid : vpid
+        }
+        $.ajax('/manage/operation', {
+            type : 'POST',
+            data : {
+                action : "addProductVender",
+                vender : vender
+            },
+            dataType : 'json',
+            success : function(json) {
+                if (json.error) {
+                    return alert(json.error);
+                }
+
+                location = document.location;
+            }
+        });
+    });
+    
+    $('.delete-vender').click(function() {
+        var $li = $(this).parent('li');
+        var venderId = $li.data('vender-id');
+        if (!confirm('确实要删除此链接吗？')) {
+            return;
+        }
+
+        var vender = {
+            prodId: $('#prodId').val(),
+            id : venderId
+        }
+        $.ajax('/manage/operation', {
+            type : 'POST',
+            data : {
+                action : "deleteProductVender",
+                vender : vender
+            },
+            dataType : 'json',
+            success : function(json) {
+                if (json.error) {
+                    return alert(json.error);
+                }
+
+                $li.remove();
+            }
+        });
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
@@ -239,9 +295,13 @@ $(function() {
     <input type="hidden" id="removeCategoryId" />
     <h2>
         <span data-basic-key="name">{%= product.name %}</span>
-        <a class="change-basic" data-basic-key="name" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+        <a class="change-basic" data-basic-key="name" href="javascript:void(0)">
+            <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+        <a target="_blank" href="http://www.amazon.cn/s/?field-keywords={%= product.name %}&url=search-alias%3Daps&tag=qiri-23">
+            <span class="ui-icon ui-icon-search" style="display: inline-block"></span><span style="font-size:12px; color:black">Amazon</span></a>
+        <a target="_blank" href="http://s8.taobao.com/search?q={%= product.name %}&cat=0&pid=mm_16939787_3205606_14608130">
+            <span class="ui-icon ui-icon-search" style="display: inline-block"></span><span style="font-size:12px; color:black">Taobao</span></a>
     </h2>
-    
     <div class="span-8">
         {% if (product.image) { %}
             <img src="/pimg{%= product.image %}?width=300&height=300" style="max-height:300px; max-width:300px" />
@@ -295,7 +355,24 @@ $(function() {
         %}
         </ul>
         <div class="clear"></div>
-        <h3>购买链接</h3>
+        <h3>购买链接
+            <a class="new-vender" data-vender-code='amazon' href="javascript:void(0)">
+                <span class="ui-icon ui-icon-plus" style="display: inline-block"></span><span style="font-size:12px; color:black">Amazon</span></a>
+            <a class="new-vender" data-vender-code='taobao' href="javascript:void(0)">
+                <span class="ui-icon ui-icon-plus" style="display: inline-block"></span><span style="font-size:12px; color:black">Taobao</span></a>
+        </h3>
+        <ul>
+        {%
+            product.venders.forEach(function(vender) {
+        %}
+            <li data-vender-id="{%= vender.id %}" style="width:100%; margin:5px 0">
+            {%= vender.code%}[{%= vender.vpid %}] <a target="_blank" href="{%= vender.url %}">去{%= vender.name %}购买</a>
+            <a class="delete-vender" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            </li>
+        {%
+            })
+        %}
+        </ul>
     </div>
 </div>
 <hr class="space"/>

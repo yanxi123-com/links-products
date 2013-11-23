@@ -502,3 +502,44 @@ exports.sortProductProp = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.addProductVender = function(req, res, next) {
+    var vender = req.body.vender;
+    async.auto({
+        updatePage : function(callback) {
+            s.Product.findByIdAndUpdate(vender.prodId, {
+                $push : {
+                    venders : {
+                        code : vender.code,
+                        vpid : vender.vpid,
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteProductVender = function(req, res, next) {
+    var vender = req.body.vender;
+    async.auto({
+        updatePage : function(callback) {
+            s.Product.findByIdAndUpdate(vender.prodId, {
+                $pull : {
+                    venders : {
+                        _id : new ObjectId(vender.id)
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};

@@ -15,7 +15,7 @@ $(function(){
     };
     
     var searchHandlers = {
-        joyo: function() {
+        amazon: function() {
             $form.attr('action', "http://www.amazon.cn/s/ref=nb_sb_noss");
             $q.attr("name", "field-keywords");
             resetParam({
@@ -27,18 +27,18 @@ $(function(){
 			$form.attr('action', "http://www.tushucheng.com/book/3th-search.html");
             $q.attr("name", "keyword");
             resetParam({
-				url: "http://s8.taobao.com/search?q=${keyword}&cat=0&pid=mm_16939787_0_0&mode=23&commend=1%2C2",
+				url: "http://s8.taobao.com/search?q=${keyword}&cat=0&pid=mm_16939787_3205606_14630046&mode=23&commend=1%2C2",
 				charset: "GBK"
 			});
 		},
-		tmall: function() {
-			$form.attr('action', "http://www.tushucheng.com/book/3th-search.html");
+        lefeng: function() {
+            $form.attr('action', "http://www.tushucheng.com/book/3th-search.html");
             $q.attr("name", "keyword");
             resetParam({
-				url: "http://s8.taobao.com/search?q=${keyword}&cat=0&pid=mm_16939787_0_0&mode=23&commend=1%2C2&tab=mall",
-				charset: "GBK"
-			});
-		}
+                url: "http://track.lefeng.com/track.jsp?aid=1581482&cid2=qiri-search&url=http://search.lefeng.com/search/search?key=${keyword}",
+                charset: "UTF-8"
+            });
+        }
     };
     
     $form.submit(function(){

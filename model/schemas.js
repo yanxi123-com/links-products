@@ -2,15 +2,48 @@
  * Copyright(c) qiri.com <yanxi@yanxi.com>
  */
 
+var _ = require('underscore');
 var mongoose = require('mongoose');
 var config = require('../config');
+
+var Schema = mongoose.Schema;
 var conn = mongoose.createConnection(config.get('mongodb'), {
     server : {
         auto_reconnect : true
     }
 });
 
-var schemas = {
+var mongoSchemas = {};
+
+mongoSchemas.Vender = new Schema({
+    code : String,
+    shopName : String,
+    vpid : String,
+    price : Number,
+    available : {
+        type : Boolean,
+        "default" : 1
+    }
+});
+
+mongoSchemas.Vender.virtual('url').get(function() {
+    switch (this.code) {
+    case 'taobao':
+        break;
+    case 'amazon':
+        return 'http://www.amazon.cn/dp/' + this.vpid + '?tag=qiri-23';
+    }
+});
+
+mongoSchemas.Vender.virtual('name').get(function() {
+    if (this.code === 'taobao') {
+        return this.shopName || '淘宝网';
+    } else if (this.code === 'amazon') {
+        return '亚马逊';
+    }
+});
+
+var collections = {
     Link : {
         areaId : String,
         text : String,
@@ -51,13 +84,7 @@ var schemas = {
         image : String,
         listPrice : Number,
         categoryIds : [ String ],
-        venders : [ {
-            name : String,
-            prodId : String,
-            title : String,
-            price : Number,
-            url : String,
-        } ],
+        venders : [ mongoSchemas.Vender ],
         props : [ {
             name : String,
             value : String,
@@ -74,14 +101,18 @@ var schemas = {
     },
 };
 
-var mongoSchemas = (function() {
-    var result = {};
-    for ( var name in schemas) {
-        result[name] = conn.model(name, mongoose.Schema(schemas[name], {
-            strict : true
-        }));
-    }
-    return result;
-}());
+_(collections).each(function(schema, name) {
+    mongoSchemas[name] = mongoose.Schema(collections[name], {
+        strict : true
+    });
+});
 
-exports.schemas = mongoSchemas;
+var mongoModels = (function() {
+    var result = {};
+    _(mongoSchemas).each(function(schema, name) {
+        result[name] = conn.model(name, schema);
+    });
+    return result;
+})();
+
+exports.schemas = mongoModels;
