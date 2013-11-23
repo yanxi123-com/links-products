@@ -7,7 +7,6 @@ var async = require('async');
 var config = require('../config');
 var fs = require('node-fs');
 var path = require('path');
-var s = require('../model/schemas').schemas;
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var utils = require('../model/utils');

@@ -7,7 +7,7 @@ var async = require('async');
 var config = require('../config');
 var fs = require('node-fs');
 var path = require('path');
-var s = require('../model/schemas').schemas;
+var m = require('../model/models').models;
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var utils = require('../model/utils');
@@ -15,7 +15,7 @@ var utils = require('../model/utils');
 var getPageInfo = function(pageName, callback) {
     async.auto({
         page : function(cb) {
-            s.Page.findOne({
+            m.Page.findOne({
                 name : pageName
             }, cb);
         },
@@ -23,7 +23,7 @@ var getPageInfo = function(pageName, callback) {
             if (!results.page) {
                 return cb(new QiriError(404));
             }
-            s.Area.find({
+            m.Area.find({
                 pageId : results.page.id
             }, "title linkIds type", cb);
         }],
@@ -33,7 +33,7 @@ var getPageInfo = function(pageName, callback) {
             });
             var tasks = _(results.areas).map(function(area) {
                 return function(cb) {
-                    s.Link.find({
+                    m.Link.find({
                         areaId : area.id
                     }, cb);
                 };
@@ -69,7 +69,7 @@ var getGroupCategories = function(page, callback) {
     var channel = page.name;
     async.auto({
         categories : function(callback) {
-            s.Category.find({
+            m.Category.find({
                 channel : channel
             }, callback);
         }

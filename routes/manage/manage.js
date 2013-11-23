@@ -2,7 +2,7 @@ var _ = require('underscore');
 var async = require('async');
 var path = require('path');
 
-var s = require('../../model/schemas').schemas;
+var m = require('../../model/models').models;
 var config = require('../../config');
 var funcs = require('../functions');
 var operation = require('./operation');
@@ -26,7 +26,7 @@ exports.category = function(req, res, next) {
     var channel = req.query.channel;
     async.auto({
         page : function(callback) {
-            s.Page.findOne({
+            m.Page.findOne({
                 type : 'channel',
                 name : channel
             }, callback);
@@ -65,7 +65,7 @@ exports.products = function(req, res, next) {
     var channel = req.query.channel;
     async.auto({
         page : function(callback) {
-            s.Page.findOne({
+            m.Page.findOne({
                 type : 'channel',
                 name : channel
             }, callback);
@@ -74,7 +74,7 @@ exports.products = function(req, res, next) {
             funcs.getGroupCategories(results.page, callback);
         }],
         products : function(callback) {
-            s.Product.find({channel: channel}, 'name image', callback);
+            m.Product.find({channel: channel}, 'name image', callback);
         }
     }, function(err, results) {
         var page = results.page;
@@ -90,10 +90,10 @@ exports.product = function(req, res, next) {
     var prodId = req.query.id;
     async.auto({
         product : function(callback) {
-            s.Product.findById(prodId, callback);
+            m.Product.findById(prodId, callback);
         },
         page : ['product', function(callback, results) {
-            s.Page.findOne({
+            m.Page.findOne({
                 type : 'channel',
                 name : results.product.channel
             }, callback);
@@ -152,7 +152,7 @@ exports.postProductImage = function(req, res, next) {
             funcs.uploadFile(uploadPath, image, callback);
         },
         uploadProd : [ 'fileUrlPath', function(callback, results) {
-            s.Product.findByIdAndUpdate(prodId, {
+            m.Product.findByIdAndUpdate(prodId, {
                 $set : {
                     image : results.fileUrlPath
                 }

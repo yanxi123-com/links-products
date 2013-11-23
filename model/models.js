@@ -13,9 +13,9 @@ var conn = mongoose.createConnection(config.get('mongodb'), {
     }
 });
 
-var mongoSchemas = {};
+var schemas = {};
 
-mongoSchemas.Vender = new Schema({
+schemas.Vender = new Schema({
     code : String,
     shopName : String,
     vpid : String,
@@ -26,7 +26,7 @@ mongoSchemas.Vender = new Schema({
     }
 });
 
-mongoSchemas.Vender.virtual('url').get(function() {
+schemas.Vender.virtual('url').get(function() {
     switch (this.code) {
     case 'taobao':
         break;
@@ -35,7 +35,7 @@ mongoSchemas.Vender.virtual('url').get(function() {
     }
 });
 
-mongoSchemas.Vender.virtual('name').get(function() {
+schemas.Vender.virtual('name').get(function() {
     if (this.code === 'taobao') {
         return this.shopName || '淘宝网';
     } else if (this.code === 'amazon') {
@@ -84,7 +84,7 @@ var collections = {
         image : String,
         listPrice : Number,
         categoryIds : [ String ],
-        venders : [ mongoSchemas.Vender ],
+        venders : [ schemas.Vender ],
         props : [ {
             name : String,
             value : String,
@@ -102,17 +102,17 @@ var collections = {
 };
 
 _(collections).each(function(schema, name) {
-    mongoSchemas[name] = mongoose.Schema(collections[name], {
+    schemas[name] = mongoose.Schema(collections[name], {
         strict : true
     });
 });
 
-var mongoModels = (function() {
+var models = (function() {
     var result = {};
-    _(mongoSchemas).each(function(schema, name) {
+    _(schemas).each(function(schema, name) {
         result[name] = conn.model(name, schema);
     });
     return result;
 })();
 
-exports.schemas = mongoModels;
+exports.models = models;

@@ -4,17 +4,17 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 var QiriError = require('../../model/qiri-err');
 var utils = require('../../model/utils');
-var s = require('../../model/schemas').schemas;
+var m = require('../../model/models').models;
 
 exports.addLink = function(req, res, next) {
     var newLink = req.body.newLink;
 
     async.auto({
         newLink : function(callback) {
-            s.Link.create(newLink, callback);
+            m.Link.create(newLink, callback);
         },
         updateArea : [ 'newLink', function(callback, results) {
-            s.Area.findByIdAndUpdate(newLink.areaId, {
+            m.Area.findByIdAndUpdate(newLink.areaId, {
                 $push : {
                     linkIds : results.newLink.id
                 }
@@ -34,7 +34,7 @@ exports.sortLink = function(req, res, next) {
 
     async.auto({
         updateArea : function(callback) {
-            s.Area.findByIdAndUpdate(areaId, {
+            m.Area.findByIdAndUpdate(areaId, {
                 $set : {
                     linkIds : linkIds
                 }
@@ -53,7 +53,7 @@ exports.deleteLink = function(req, res, next) {
 
     async.auto({
         deleteLink : function(callback) {
-            s.Link.findByIdAndRemove(linkId, callback);
+            m.Link.findByIdAndRemove(linkId, callback);
         }
     }, function(err, results) {
         if (err) {
@@ -68,7 +68,7 @@ exports.changeLink = function(req, res, next) {
 
     async.auto({
         updateLink : function(callback) {
-            s.Link.findByIdAndUpdate(link.id, {
+            m.Link.findByIdAndUpdate(link.id, {
                 text : link.text,
                 url : link.url,
                 image : link.image
@@ -86,7 +86,7 @@ exports.changeArea = function(req, res, next) {
     var area = req.body.area;
     async.auto({
         updateArea : function(callback) {
-            s.Area.findByIdAndUpdate(area.id, {
+            m.Area.findByIdAndUpdate(area.id, {
                 title : area.title,
                 type : area.type
             }, callback);
@@ -104,10 +104,10 @@ exports.addArea = function(req, res, next) {
 
     async.auto({
         newArea : function(callback) {
-            s.Area.create(newArea, callback);
+            m.Area.create(newArea, callback);
         },
         updatePage : [ 'newArea', function(callback, results) {
-            s.Page.findByIdAndUpdate(newArea.pageId, {
+            m.Page.findByIdAndUpdate(newArea.pageId, {
                 $push : {
                     areaIds : results.newArea.id
                 }
@@ -126,7 +126,7 @@ exports.deleteArea = function(req, res, next) {
 
     async.auto({
         deleteArea : function(callback) {
-            s.Area.findByIdAndRemove(areaId, callback);
+            m.Area.findByIdAndRemove(areaId, callback);
         }
     }, function(err, results) {
         if (err) {
@@ -142,7 +142,7 @@ exports.sortArea = function(req, res, next) {
 
     async.auto({
         updatePage : function(callback) {
-            s.Page.findByIdAndUpdate(pageId, {
+            m.Page.findByIdAndUpdate(pageId, {
                 $set : {
                     areaIds : areaIds
                 }
@@ -161,7 +161,7 @@ exports.changePage = function(req, res, next) {
 
     async.auto({
         updatePage : function(callback) {
-            s.Page.findByIdAndUpdate(page.id, {
+            m.Page.findByIdAndUpdate(page.id, {
                 $set : {
                     title : page.title,
                     name : page.name,
@@ -181,11 +181,11 @@ exports.addCategory = function(req, res, next) {
 
     async.auto({
         category : function(callback) {
-            s.Category.create(category, callback);
+            m.Category.create(category, callback);
         },
         updatePage : [ 'category', function(callback, results) {
             var category = results.category;
-            s.Page.update({
+            m.Page.update({
                 type : 'channel',
                 name : category.channel,
                 'categoryGroups.name' : category.group
@@ -208,14 +208,14 @@ exports.deleteCategory = function(req, res, next) {
 
     async.auto({
         category : function(callback) {
-            s.Category.findById(categoryId, callback);
+            m.Category.findById(categoryId, callback);
         },
         deleteCategory : [ 'category', function(callback, results) {
-            s.Category.findByIdAndRemove(categoryId, callback);
+            m.Category.findByIdAndRemove(categoryId, callback);
         } ],
         updatePage : [ 'deleteCategory', function(callback, results) {
             var category = results.category;
-            s.Page.update({
+            m.Page.update({
                 type : 'channel',
                 name : category.channel,
                 'categoryGroups.name' : category.group
@@ -238,7 +238,7 @@ exports.changeCategory = function(req, res, next) {
 
     async.auto({
         updateCategory : function(callback) {
-            s.Category.findByIdAndUpdate(category.id, {
+            m.Category.findByIdAndUpdate(category.id, {
                 $set : {
                     title : category.title,
                     name : category.name,
@@ -258,7 +258,7 @@ exports.addCategoryGroup = function(req, res, next) {
 
     async.auto({
         updatePage : function(callback) {
-            s.Page.findByIdAndUpdate(categoryGroup.pageId, {
+            m.Page.findByIdAndUpdate(categoryGroup.pageId, {
                 $push : {
                     categoryGroups : {
                         title : categoryGroup.title,
@@ -280,7 +280,7 @@ exports.deleteCategoryGroup = function(req, res, next) {
 
     async.auto({
         updatePage : function(callback) {
-            s.Page.findByIdAndUpdate(group.pageId, {
+            m.Page.findByIdAndUpdate(group.pageId, {
                 $pull : {
                     categoryGroups: {_id: new ObjectId(group.id)}
                 }
@@ -300,13 +300,13 @@ exports.sortCategoryGroup = function(req, res, next) {
 
     async.auto({
         categoryGroups : function(callback) {
-            s.Page.findById(pageId, function(err, page) {
+            m.Page.findById(pageId, function(err, page) {
                 callback(err, page.categoryGroups);
             });
         },
         updatePage : ['categoryGroups', function(callback, results) {
             var sortedGroups = utils.sortById(results.categoryGroups, groupIds);
-            s.Page.findByIdAndUpdate(pageId, {
+            m.Page.findByIdAndUpdate(pageId, {
                 $set : {
                     categoryGroups : sortedGroups
                 }
@@ -327,7 +327,7 @@ exports.sortCategory = function(req, res, next) {
 
     async.auto({
         updatePage : function(callback) {
-            s.Page.update({
+            m.Page.update({
                 _id : new ObjectId(pageId),
                 'categoryGroups._id' : new ObjectId(groupId)
             }, {
@@ -349,7 +349,7 @@ exports.addProduct = function(req, res, next) {
 
     async.auto({
         addProduct : function(callback) {
-            s.Product.create(product, callback);
+            m.Product.create(product, callback);
         }
     }, function(err, results) {
         if (err) {
@@ -366,7 +366,7 @@ exports.changeProductBasic = function(req, res, next) {
     
     async.auto({
         updateProduct : function(callback) {
-            s.Product.findByIdAndUpdate(product.id, {
+            m.Product.findByIdAndUpdate(product.id, {
                 $set: update
             }, callback);
         }
@@ -386,7 +386,7 @@ exports.changeProductCategory = function(req, res, next) {
     var tasks = [];
     if (addId) {
         tasks.push(function(callback) {
-            s.Product.findByIdAndUpdate(prodId, {
+            m.Product.findByIdAndUpdate(prodId, {
                 $addToSet : {
                     categoryIds : addId
                 }
@@ -395,7 +395,7 @@ exports.changeProductCategory = function(req, res, next) {
     }
     if (removeId) {
         tasks.push(function(callback) {
-            s.Product.findByIdAndUpdate(prodId, {
+            m.Product.findByIdAndUpdate(prodId, {
                 $pull : {
                     categoryIds : removeId
                 }
@@ -417,7 +417,7 @@ exports.addProductProp = function(req, res, next) {
     var value = req.body.value;
 
     async.auto([ function(callback) {
-        s.Product.findByIdAndUpdate(prodId, {
+        m.Product.findByIdAndUpdate(prodId, {
             $push : {
                 props : {
                     name : name,
@@ -437,7 +437,7 @@ exports.changeProductProp = function(req, res, next) {
     var prop = req.body.prop;
 
     async.auto([ function(callback) {
-        s.Product.update({
+        m.Product.update({
             _id : new ObjectId(prop.prodId),
             'props._id' : new ObjectId(prop.id)
         }, {
@@ -461,7 +461,7 @@ exports.deleteProductProp = function(req, res, next) {
     var prop = req.body.prop;
 
     async.auto([ function(callback) {
-        s.Product.findByIdAndUpdate(prop.prodId, {
+        m.Product.findByIdAndUpdate(prop.prodId, {
             $pull : {
                 props : {
                     _id : new ObjectId(prop.id)
@@ -482,14 +482,14 @@ exports.sortProductProp = function(req, res, next) {
 
     async.auto({
         props : function(callback) {
-            s.Product.findById(prodId, function(err, product) {
+            m.Product.findById(prodId, function(err, product) {
                 callback(err, product.props);
             });
         },
         updatePage : ['props', function(callback, results) {
             var sortedProps = utils.sortById(results.props, propIds);
             console.log(sortedProps);
-            s.Product.findByIdAndUpdate(prodId, {
+            m.Product.findByIdAndUpdate(prodId, {
                 $set : {
                     props : sortedProps
                 }
@@ -507,7 +507,7 @@ exports.addProductVender = function(req, res, next) {
     var vender = req.body.vender;
     async.auto({
         updatePage : function(callback) {
-            s.Product.findByIdAndUpdate(vender.prodId, {
+            m.Product.findByIdAndUpdate(vender.prodId, {
                 $push : {
                     venders : {
                         code : vender.code,
@@ -528,7 +528,7 @@ exports.deleteProductVender = function(req, res, next) {
     var vender = req.body.vender;
     async.auto({
         updatePage : function(callback) {
-            s.Product.findByIdAndUpdate(vender.prodId, {
+            m.Product.findByIdAndUpdate(vender.prodId, {
                 $pull : {
                     venders : {
                         _id : new ObjectId(vender.id)
