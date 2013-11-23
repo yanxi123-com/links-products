@@ -3,7 +3,7 @@ var async = require('async');
 var path = require('path');
 
 var m = require('../../model/models').models;
-var config = require('../../config');
+var config = require('../../config').config;
 var funcs = require('../functions');
 var operation = require('./operation');
 var QiriError = require('../../model/qiri-err');
@@ -52,7 +52,7 @@ exports.uploadFile = function(req, res, next) {
     var image = req.files.displayImage;
     async.auto({
         fileUrlPath : function(callback) {
-            funcs.uploadFile(config.get('uploadPath'), image, callback);
+            funcs.uploadFile(config.uploadPath, image, callback);
         }
     }, function(err, results) {
         res.render("manage/upload", {
@@ -117,7 +117,7 @@ exports.product = function(req, res, next) {
 exports.login = function(req, res, next) {
     var password = req.body.password;
     var getPwdMd5 = function(password) {
-        var pwd = password + config.get('pwdSecret');
+        var pwd = password + config.pwdSecret;
         return crypto.createHash('md5').update(pwd).digest('hex');
     };
     var setLoginCookie = function(res, userId) {
@@ -127,7 +127,7 @@ exports.login = function(req, res, next) {
         });
     };
 
-    if (getPwdMd5(password) == config.get('encryptedPwd')) {
+    if (getPwdMd5(password) == config.encryptedPwd) {
         setLoginCookie(res, 1);
         res.redirect('/manage');
         return;
@@ -149,7 +149,7 @@ exports.postProductImage = function(req, res, next) {
     var image = req.files.image;
     async.auto({
         fileUrlPath : function(callback) {
-            var uploadPath = config.get('originProdPath');
+            var uploadPath = config.originProdPath;
             funcs.uploadFile(uploadPath, image, callback);
         },
         uploadProd : [ 'fileUrlPath', function(callback, results) {

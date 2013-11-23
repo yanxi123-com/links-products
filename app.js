@@ -4,7 +4,7 @@
  */
  
 var express = require('express'),
-    config = require('./config'),
+    config = require('./config').config,
     http = require('http'),
     fs = require('fs'),
     qiriError = require('./model/qiri-err'),
@@ -18,7 +18,7 @@ ejs.open = '{%';
 ejs.close = '%}';
 
 app.configure(function() {
-    app.set('port', config.get('port'));
+    app.set('port', config.port);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'ejs');
     app.use(express.favicon(__dirname + '/public/img/favicon.ico'));
@@ -29,7 +29,7 @@ app.configure(function() {
     }));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(express.cookieParser(config.get('cookieSecret')));
+    app.use(express.cookieParser(config.cookieSecret));
   
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public'), {maxAge: 1000 * 3600 * 24 * 30}));

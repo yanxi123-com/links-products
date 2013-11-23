@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var async = require('async');
-var config = require('../config');
+var config = require('../config').config;
 var fs = require('node-fs');
 var path = require('path');
 var QiriError = require('../model/qiri-err');
@@ -32,8 +32,8 @@ exports.showProductImage = function(req, res, next) {
     var width = req.query.width;
     var height = req.query.height;
 
-    var originPath = config.get('originProdPath');
-    var resizePath = config.get('resizeProdPath');
+    var originPath = config.originProdPath;
+    var resizePath = config.resizeProdPath;
 
     var originFilePath = path.join(originPath, imgPath);
     var resizeFilePath = path.join(resizePath, width + '-' + height, imgPath);

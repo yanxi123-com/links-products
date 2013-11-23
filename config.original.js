@@ -11,6 +11,12 @@ var config = {
     uploadPath : "/your/upload/path",
     originProdPath : "/your/upload/path/origin",
     resizeProdPath : "/your/upload/path/resize",
+    amazonOption : {
+        awsId : '',
+        awsSecret : '',
+        assocId : '',
+        endPoint : 'webservices.amazon.cn'
+    },
 };
 
 exports.get = function(key) {

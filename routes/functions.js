@@ -4,7 +4,6 @@
 
 var _ = require('underscore');
 var async = require('async');
-var config = require('../config');
 var fs = require('node-fs');
 var path = require('path');
 var m = require('../model/models').models;
