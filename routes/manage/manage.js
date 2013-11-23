@@ -70,7 +70,7 @@ exports.products = function(req, res, next) {
                 name : channel
             }, callback);
         },
-        groupCategories : ['page', function(callback, results){
+        groupCategories : ['page', function(callback, results) {
             funcs.getGroupCategories(results.page, callback);
         }],
         products : function(callback) {
@@ -93,15 +93,21 @@ exports.product = function(req, res, next) {
             m.Product.findById(prodId, callback);
         },
         page : ['product', function(callback, results) {
+            if (!results.product) {
+                return callback(new QiriError(404));
+            }
             m.Page.findOne({
                 type : 'channel',
                 name : results.product.channel
             }, callback);
         }],
-        groupCategories : ['page', function(callback, results){
+        groupCategories : ['page', function(callback, results) {
             funcs.getGroupCategories(results.page, callback);
         } ]
     }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
         var categoryHash = utils.toHash(results.product.categoryIds, _.identity);
         results['categoryIdHash'] = categoryHash;
         res.render("manage/product", results);
@@ -131,11 +137,6 @@ exports.login = function(req, res, next) {
 };
 
 exports.operation = function(req, res, next) {
-    var userId = req.signedCookies.userId;
-    if (!userId) {
-        return next(new QiriError(404));
-    }
-
     var action = req.body.action;
     if (!_.chain(operation).functions().contains(action).value()) {
         return next(new QiriError(404));

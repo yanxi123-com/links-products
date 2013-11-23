@@ -366,7 +366,7 @@ $(function() {
             product.venders.forEach(function(vender) {
         %}
             <li data-vender-id="{%= vender.id %}" style="width:100%; margin:5px 0">
-            {%= vender.code%}[{%= vender.vpid %}] <a target="_blank" href="{%= vender.url %}">去{%= vender.name %}购买</a>
+            {%= vender.code%}[{%= vender.vpid %}] <a target="_blank" {%- vender.linkAttrs %}>去{%= vender.name %}购买</a>
             <a class="delete-vender" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
             </li>
         {%

@@ -26,12 +26,12 @@ schemas.Vender = new Schema({
     }
 });
 
-schemas.Vender.virtual('url').get(function() {
+schemas.Vender.virtual('linkAttrs').get(function() {
     switch (this.code) {
     case 'taobao':
-        break;
+        return 'data-itemid="' + this.vpid + '" data-rd="1" data-style="2" href="#"';
     case 'amazon':
-        return 'http://www.amazon.cn/dp/' + this.vpid + '?tag=qiri-23';
+        return 'href="http://www.amazon.cn/dp/' + this.vpid + '?tag=qiri-23"';
     }
 });
 
