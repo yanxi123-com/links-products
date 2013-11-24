@@ -54,22 +54,6 @@ schemas.Vender.virtual('name').get(function() {
 });
 
 var collections = {
-    Link : {
-        areaId : String,
-        text : String,
-        url : String,
-        image : String,
-        addDate : {
-            type : Date,
-            "default" : Date.now
-        }
-    },
-    Area : {
-        title : String,
-        linkIds : [ String ],
-        type : String,
-        pageId : String,
-    },
     Page : {
         type : String,
         name : String,

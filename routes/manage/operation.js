@@ -125,7 +125,7 @@ exports.sortLink = function(req, res, next) {
                     'linkGroups.$.links' : links
                 }
             }, callback);
-        }],
+        } ],
     }, function(err, results) {
         if (err) {
             return next(err);
