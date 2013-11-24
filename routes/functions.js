@@ -11,59 +11,6 @@ var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var utils = require('../model/utils');
 
-var getPageInfo = function(pageName, callback) {
-    async.auto({
-        page : function(cb) {
-            m.Page.findOne({
-                name : pageName
-            }, cb);
-        },
-        areas : [ 'page', function(cb, results) {
-            if (!results.page) {
-                return cb(new QiriError(404));
-            }
-            m.Area.find({
-                pageId : results.page.id
-            }, "title linkIds type", cb);
-        }],
-        areaLinks : [ 'areas', function(callback, results) {
-            var areaIds = _(results.areas).map(function(area) {
-                return area.id;
-            });
-            var tasks = _(results.areas).map(function(area) {
-                return function(cb) {
-                    m.Link.find({
-                        areaId : area.id
-                    }, cb);
-                };
-            });
-            async.parallel(_(areaIds).object(tasks), callback);
-        } ]
-    }, function(err, results) {
-        if (err) {
-            return callback(err);
-        }
-        var areas = _(results.areas).map(function(area) {
-            return {
-                id : area.id,
-                title : area.title,
-                type : area.type,
-                linkIds : area.linkIds,
-                links : utils.sortById(results.areaLinks[area.id], area.linkIds)
-            };
-        });
-        areas = utils.sortById(areas, results.page.areaIds);
-        var linkNum = _(areas).reduce(function(meno, area) {
-            return meno + area.links.length;
-        }, 0);
-        callback(null, {
-            page : results.page,
-            areas : areas,
-            linkNum : linkNum
-        });
-    });
-};
-
 var getGroupCategories = function(page, callback) {
     var channel = page.name;
     async.auto({
@@ -92,14 +39,28 @@ var getGroupCategories = function(page, callback) {
 var venderPage = function(pageName, view) {
     return function(req, res, next) {
         async.auto({
-            pageInfo : function(callback) {
-                getPageInfo(pageName, callback);
+            page : function(cb) {
+                m.Page.findOne({
+                    name : pageName
+                }, cb);
             }
         }, function(err, results) {
             if (err) {
                 return next(err);
             }
-            res.render(view, results.pageInfo);
+
+            var page = results.page;
+            if (!page) {
+                return next();
+            }
+            var linkNum = _(page.linkGroups).reduce(function(meno, group) {
+                return meno + group.links.length;
+            }, 0);
+
+            res.render(view, {
+                page : page,
+                linkNum : linkNum
+            });
         });
     };
 };

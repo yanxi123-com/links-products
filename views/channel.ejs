@@ -3,7 +3,7 @@
 <div class="container vertical" style="min-height:300px;">
    <div class="span-6">
     {% 
-        areas.forEach(function(area) {
+        page.linkGroups.forEach(function(area) {
             if (area.type == 'category') { 
     %}
         <h2>{%= area.title %}</h2>
@@ -21,7 +21,7 @@
     </div>
     <div class="span-17 push-1 last">
     {% 
-        areas.forEach(function(area) {
+        page.linkGroups.forEach(function(area) {
             if (area.type == 'brand') { 
     %}
         <h2>{%= area.title %}</h2>
