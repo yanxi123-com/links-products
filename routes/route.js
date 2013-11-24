@@ -38,6 +38,11 @@ exports.showProductImage = function(req, res, next) {
     var originFilePath = path.join(originPath, imgPath);
     var resizeFilePath = path.join(resizePath, width + '-' + height, imgPath);
     
+    if (require('os').type().match(/windows/i)) {
+        res.sendfile(originFilePath);
+        return;
+    }
+    
     if (!width && !height) {
         res.sendfile(originFilePath);
         return;
@@ -63,7 +68,7 @@ exports.showProductImage = function(req, res, next) {
         }
     }, function(err, results) {
         if (err) {
-            return next(new QiriError("imageMagick not supported on windows."));
+            return next(err);
         }
         res.sendfile(resizeFilePath);
     });

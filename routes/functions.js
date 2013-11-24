@@ -5,8 +5,11 @@
 var _ = require('underscore');
 var async = require('async');
 var fs = require('node-fs');
+var request = require('request');
 var path = require('path');
+
 var m = require('../model/models').models;
+
 var QiriError = require('../model/qiri-err');
 var crypto = require('crypto');
 var utils = require('../model/utils');
@@ -65,6 +68,29 @@ var venderPage = function(pageName, view) {
     };
 };
 
+var download = function(uri, uploadPath, callback) {
+    var now = new Date();
+    var urlPath = "/" + now.getFullYear() + "/" + (now.getMonth() + 1);
+    var dir = path.join(uploadPath, urlPath);
+    var fileName = (now % (1000 * 3600 * 24)) + path.extname(uri);
+    async.auto({
+        mkdirs : function(callback) {
+            fs.mkdir(dir, 0777, true, callback);
+        },
+        save : [ 'mkdirs', function(callback) {
+            var picStream = fs.createWriteStream(path.join(dir, fileName));
+            picStream.on('close', callback);
+            request(uri).pipe(picStream); 
+        } ]
+    }, function(err, results) {
+        if (err) {
+            return callback(err);
+        }
+        var fileUrlPath = urlPath + "/" + fileName;
+        callback(null, fileUrlPath);
+    });
+};
+
 var uploadFile = function(uploadPath, file, callback) {
     if (file.size == 0) {
         return callback(new QiriError('No file to upload.'));
@@ -101,4 +127,4 @@ var generateApi = function() {
     return exports;
 };
 
-module.exports = generateApi('getGroupCategories', 'venderPage', 'uploadFile');
+module.exports = generateApi('getGroupCategories', 'venderPage', 'uploadFile', 'download');

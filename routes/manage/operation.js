@@ -6,6 +6,8 @@ var QiriError = require('../../model/qiri-err');
 var utils = require('../../model/utils');
 var m = require('../../model/models').models;
 var utils = require('../../model/utils');
+var funcs = require('../functions');
+config = require('../../config').config,
 
 exports.addLink = function(req, res, next) {
     var link = req.body.link;
@@ -619,6 +621,31 @@ exports.deleteProductVender = function(req, res, next) {
                 }
             }, callback);
         }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.changeProductImage = function(req, res, next) {
+    var image = req.body.image;
+    var url = image.url;
+    var prodId = image.prodId;
+
+    async.auto({
+        fileUrlPath : function(callback) {
+            var uploadPath = config.originProdPath;
+            funcs.download(url, uploadPath, callback);
+        },
+        uploadProd : [ 'fileUrlPath', function(callback, results) {
+            m.Product.findByIdAndUpdate(prodId, {
+                $set : {
+                    image : results.fileUrlPath
+                }
+            }, callback);
+        } ]
     }, function(err, results) {
         if (err) {
             return next(err);

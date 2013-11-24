@@ -288,6 +288,31 @@ $(function() {
             }
         });
     });
+    
+    $('.change-image').click(function() {
+        var imageUrl = prompt('请输入商家商品ID', '');
+        if (!imageUrl) {
+            return;
+        }
+        $.ajax('/manage/operation', {
+            type : 'POST',
+            data : {
+                action : "changeProductImage",
+                image : {
+                    prodId : $('#prodId').val(),
+                    url : imageUrl
+                }
+            },
+            dataType : 'json',
+            success : function(json) {
+                if (json.error) {
+                    return alert(json.error);
+                }
+
+                location = document.location;
+            }
+        });
+    });
 });
 </script>
 
@@ -300,6 +325,8 @@ $(function() {
         <span data-basic-key="name">{%= product.name %}</span>
         <a class="change-basic" data-basic-key="name" href="javascript:void(0)">
             <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+        <a class="change-image" data-basic-key="name" href="javascript:void(0)">
+            <span class="ui-icon ui-icon-image" style="display: inline-block"></span></a>
         <a target="_blank" href="http://www.amazon.cn/s/?field-keywords={%= product.name %}&url=search-alias%3Daps&tag=qiri-23">
             <span class="ui-icon ui-icon-search" style="display: inline-block"></span><span style="font-size:12px; color:black">Amazon</span></a>
         <a target="_blank" href="http://s8.taobao.com/search?q={%= product.name %}&cat=0&pid=mm_16939787_3205606_14608130">
