@@ -94,20 +94,8 @@ var venderPage = function(pageName, view) {
         async.auto({
             pageInfo : function(callback) {
                 getPageInfo(pageName, callback);
-            },
-            refactSchema : [ 'pageInfo', function(callback, results) {
-                var page = results.pageInfo.page;
-                var areas = results.pageInfo.areas;
-                console.log(areas);
-                console.log(page.id);
-                m.Page.findByIdAndUpdate(page.id, {
-                    $set : {
-                        linkGroups : areas
-                    }
-                }, callback);
-            } ]
+            }
         }, function(err, results) {
-            console.log(results.refactSchema);
             if (err) {
                 return next(err);
             }
