@@ -5,18 +5,91 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var QiriError = require('../../model/qiri-err');
 var utils = require('../../model/utils');
 var m = require('../../model/models').models;
+var utils = require('../../model/utils');
 
 exports.addLink = function(req, res, next) {
-    var newLink = req.body.newLink;
+    var link = req.body.link;
+    var collection = link.collection;
+    var collectionId = link.collectionId;
+    var groupId = link.groupId;
 
     async.auto({
-        newLink : function(callback) {
-            m.Link.create(newLink, callback);
-        },
-        updateArea : [ 'newLink', function(callback, results) {
-            m.Area.findByIdAndUpdate(newLink.areaId, {
+        update : function(callback) {
+            m[collection].update({
+                _id : new ObjectId(collectionId),
+                'linkGroups._id' : new ObjectId(groupId)
+            }, {
                 $push : {
-                    linkIds : results.newLink.id
+                    'linkGroups.$.links' : link
+                }
+            }, callback);
+            m.Link.create(link, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteLink = function(req, res, next) {
+    var link = req.body.link;
+    var collection = link.collection;
+    var collectionId = link.collectionId;
+    var groupId = link.groupId;
+    var linkId = link.id;
+
+    async.auto({
+        update : function(callback) {
+            m[collection].update({
+                _id : new ObjectId(collectionId),
+                'linkGroups._id' : new ObjectId(groupId),
+            }, {
+                $pull : {
+                    'linkGroups.$.links' : {
+                        _id : new ObjectId(linkId)
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.changeLink = function(req, res, next) {
+    var link = req.body.link;
+    var collection = link.collection;
+    var collectionId = link.collectionId;
+    var groupId = link.groupId;
+    var linkId = link.id;
+
+    async.auto({
+        linkGroups : function(callback) {
+            m[collection].findById(collectionId, function(err, collection){
+                callback(err, collection.linkGroups);
+            });
+        },
+        update : [ 'linkGroups', function(callback, results) {
+            var groups = utils.toHash(results.linkGroups, 'id');
+            var links = groups[groupId].links;
+            _(links).each(function(dbLink) {
+                if (dbLink.id === linkId) {
+                    dbLink.text = link.text;
+                    dbLink.url = link.url;
+                    dbLink.image = link.image;
+                }
+            });
+            m[collection].update({
+                _id : new ObjectId(collectionId),
+                'linkGroups._id' : new ObjectId(groupId),
+            }, {
+                $set : {
+                    'linkGroups.$.links' : links
                 }
             }, callback);
         } ]
@@ -29,201 +102,30 @@ exports.addLink = function(req, res, next) {
 };
 
 exports.sortLink = function(req, res, next) {
-    var areaId = req.body.areaId;
-    var linkIds = req.body.linkIds;
-
-    async.auto({
-        updateArea : function(callback) {
-            m.Area.findByIdAndUpdate(areaId, {
-                $set : {
-                    linkIds : linkIds
-                }
-            }, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.deleteLink = function(req, res, next) {
-    var linkId = req.body.linkId;
-
-    async.auto({
-        deleteLink : function(callback) {
-            m.Link.findByIdAndRemove(linkId, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.changeLink = function(req, res, next) {
     var link = req.body.link;
+    var collection = link.collection;
+    var collectionId = link.collectionId;
+    var groupId = link.groupId;
+    var linkIds = link.ids;
 
     async.auto({
-        updateLink : function(callback) {
-            m.Link.findByIdAndUpdate(link.id, {
-                text : link.text,
-                url : link.url,
-                image : link.image
-            }, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.changeArea = function(req, res, next) {
-    var area = req.body.area;
-    async.auto({
-        updateArea : function(callback) {
-            m.Area.findByIdAndUpdate(area.id, {
-                title : area.title,
-                type : area.type
-            }, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.addArea = function(req, res, next) {
-    var newArea = req.body.newArea;
-
-    async.auto({
-        newArea : function(callback) {
-            m.Area.create(newArea, callback);
+        linkGroups : function(callback) {
+            m[collection].findById(collectionId, function(err, collection) {
+                callback(err, collection.linkGroups);
+            });
         },
-        updatePage : [ 'newArea', function(callback, results) {
-            m.Page.findByIdAndUpdate(newArea.pageId, {
-                $push : {
-                    areaIds : results.newArea.id
-                }
-            }, callback);
-        } ]
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.deleteArea = function(req, res, next) {
-    var areaId = req.body.areaId;
-
-    async.auto({
-        deleteArea : function(callback) {
-            m.Area.findByIdAndRemove(areaId, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.sortArea = function(req, res, next) {
-    var pageId = req.body.pageId;
-    var areaIds = req.body.areaIds;
-
-    async.auto({
-        updatePage : function(callback) {
-            m.Page.findByIdAndUpdate(pageId, {
+        update : [ 'linkGroups', function(callback, results) {
+            var groups = utils.toHash(results.linkGroups, 'id');
+            var links = utils.sortById(groups[groupId].links, linkIds);
+            m[collection].update({
+                _id : new ObjectId(collectionId),
+                'linkGroups._id' : new ObjectId(groupId)
+            }, {
                 $set : {
-                    areaIds : areaIds
+                    'linkGroups.$.links' : links
                 }
             }, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.addLink2 = function(req, res, next) {
-    var newLink = req.body.newLink;
-
-    async.auto({
-        newLink : function(callback) {
-            m.Link.create(newLink, callback);
-        },
-        updateArea : [ 'newLink', function(callback, results) {
-            m.Area.findByIdAndUpdate(newLink.areaId, {
-                $push : {
-                    linkIds : results.newLink.id
-                }
-            }, callback);
-        } ]
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.sortLink2 = function(req, res, next) {
-    var areaId = req.body.areaId;
-    var linkIds = req.body.linkIds;
-
-    async.auto({
-        updateArea : function(callback) {
-            m.Area.findByIdAndUpdate(areaId, {
-                $set : {
-                    linkIds : linkIds
-                }
-            }, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.deleteLink2 = function(req, res, next) {
-    var linkId = req.body.linkId;
-
-    async.auto({
-        deleteLink : function(callback) {
-            m.Link.findByIdAndRemove(linkId, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.changeLink2 = function(req, res, next) {
-    var link = req.body.link;
-
-    async.auto({
-        updateLink : function(callback) {
-            m.Link.findByIdAndUpdate(link.id, {
-                text : link.text,
-                url : link.url,
-                image : link.image
-            }, callback);
-        }
+        }],
     }, function(err, results) {
         if (err) {
             return next(err);
@@ -238,76 +140,98 @@ exports.changeLinkGroup = function(req, res, next) {
     var collectionId = group.collectionId;
     var groupId = group.id;
     var title = group.title;
-    var type = groups.type;
-    
-    async.auto({
-        LinkGroups : function(callback) {
-            var conditions = {
-                _id : new ObjectId(collectionId)
-            };
-            conditions[collection + ".linkGroups._id"] = groupId;
-            var update = {};
-            update[collection + '.$.title'] = title;
-            update[collection + '.$.type'] = type;
-            m[collection].update(conditions, update, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.addArea2 = function(req, res, next) {
-    var newArea = req.body.newArea;
+    var type = group.type;
 
     async.auto({
-        newArea : function(callback) {
-            m.Area.create(newArea, callback);
-        },
-        updatePage : [ 'newArea', function(callback, results) {
-            m.Page.findByIdAndUpdate(newArea.pageId, {
-                $push : {
-                    areaIds : results.newArea.id
-                }
-            }, callback);
-        } ]
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.deleteArea2 = function(req, res, next) {
-    var areaId = req.body.areaId;
-
-    async.auto({
-        deleteArea : function(callback) {
-            m.Area.findByIdAndRemove(areaId, callback);
-        }
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.json({});
-    });
-};
-
-exports.sortArea2 = function(req, res, next) {
-    var pageId = req.body.pageId;
-    var areaIds = req.body.areaIds;
-
-    async.auto({
-        updatePage : function(callback) {
-            m.Page.findByIdAndUpdate(pageId, {
+        update : function(callback) {
+            m[collection].update({
+                _id : new ObjectId(collectionId),
+                "linkGroups._id" : new ObjectId(groupId)
+            }, {
                 $set : {
-                    areaIds : areaIds
+                    'linkGroups.$.title' : title,
+                    'linkGroups.$.type' : type
                 }
             }, callback);
         }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.addLinkGroup = function(req, res, next) {
+    var group = req.body.group;
+    var collection = group.collection;
+    var collectionId = group.collectionId;
+    var title = group.title;
+    var type = group.type;
+
+    async.auto({
+        update : function(callback) {
+            m[collection].findByIdAndUpdate(collectionId, {
+                $push : {
+                    linkGroups : {
+                        title : title,
+                        type : type
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.deleteLinkGroup = function(req, res, next) {
+    var group = req.body.group;
+    var collection = group.collection;
+    var collectionId = group.collectionId;
+    var groupId = group.id;
+
+    async.auto({
+        update : function(callback) {
+            m[collection].findByIdAndUpdate(collectionId, {
+                $pull : {
+                    linkGroups : {
+                        _id : new ObjectId(groupId)
+                    }
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
+
+exports.sortLinkGroup = function(req, res, next) {
+    var group = req.body.group;
+    var collection = group.collection;
+    var collectionId = group.collectionId;
+    var groupIds = group.ids;
+
+    async.auto({
+        linkGroups : function(callback) {
+            m[collection].findById(collectionId, function(err, collection) {
+                callback(err, collection.linkGroups);
+            });
+        },
+        update : ['linkGroups', function(callback, results) {
+            var linkGroups = utils.sortById(results.linkGroups, groupIds);
+            m[collection].findByIdAndUpdate(collectionId, {
+                $set : {
+                    linkGroups : linkGroups
+                }
+            }, callback);
+        }]
     }, function(err, results) {
         if (err) {
             return next(err);

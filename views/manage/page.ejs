@@ -1,6 +1,8 @@
 {% headTitle = page.title %}
 {% include ../include/manage-header %}
 
+<div id="main" data-pageId='{%= page.id %}' data-collection="Page" data-collection-id="{%= page.id %}"></div>
+
 <div class="container" style="min-height:300px">
     <h2>
        <span>增加新区域</span> <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
@@ -15,21 +17,21 @@
        {% } %}
     </h2>
     <hr/>
-    {% areas.forEach(function(area) { %}
+    {% page.linkGroups.forEach(function(area) { %}
         <h2>
             <span id="title-{%= area.id %}">{%= area.title %}</span> <span>({%= area.links.length %})</span>
-            <a class="new-link" data-area="{%= area.id %}" href="javascript:void(0)">
+            <a class="new-link" data-area-id="{%= area.id %}" href="javascript:void(0)">
                 <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
             {% if (area.links.length == 0) { %}
-            <a class="delete-area" data-area="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+            <a class="delete-area" data-area-id="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
             {% } %}
-            <a class="change-area" data-area="{%= area.id %}" data-area-type="{%= area.type %}" href="javascript:void(0)">
+            <a class="change-area" data-area-id="{%= area.id %}" data-area-type="{%= area.type %}" href="javascript:void(0)">
                 <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
         </h2>
         <div class="clearfix">
-        <ul class="links" data-area="{%= area.id %}">
+        <ul class="links">
             {% area.links.forEach(function(link) { %}
-                <li data-id="{%= link.id %}">
+                <li data-area-id="{%= area.id %}" data-link-id="{%= link.id %}">
                     <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
                     <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
                     <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
@@ -59,7 +61,7 @@
     <h2>更改区域顺序： </h2>
     <div class="clearfix">
     <ul class="areas">
-        {% areas.forEach(function(area) { %}
+        {% page.linkGroups.forEach(function(area) { %}
             <li data-id={%= area.id %}>{%= area.title %}</li>
         {% }) %}
     </ul>
@@ -83,6 +85,7 @@
 <div id="change-link" title="修改链接">
     <fieldset>
         <input type="hidden" id="changeLinkId" />
+        <input type="hidden" id="changeLinkAreaId" />
         <label>文字</label>
         <input type="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
         <br/><br/>
@@ -97,7 +100,6 @@
 <div id="new-area" title="创建新区域">
     <hr class="space"/>
     <fieldset>
-        <input type="hidden" id="pageId" value="{%= page.id %}" />
         <label>标题：</label>
         <input type="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
         <br/><br/>
@@ -140,6 +142,7 @@
 
 <div id="delete-link" title="确认删除链接?">
     <input type="hidden" id="deleteLinkId" />
+    <input type="hidden" id="deleteAreaId" />
     <p>
         <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
         <span>删除后无法恢复，确定要此链接吗？</span>
