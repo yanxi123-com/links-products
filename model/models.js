@@ -26,6 +26,16 @@ schemas.Vender = new Schema({
     }
 });
 
+schemas.LinkGroups = new Schema({
+    title : String,
+    type : String,
+    links : [ {
+        text : String,
+        url : String,
+        image : String
+    } ]
+});
+
 schemas.Vender.virtual('linkAttrs').get(function() {
     switch (this.code) {
     case 'taobao':
@@ -69,7 +79,8 @@ var collections = {
             title : String,
             name : String,
             categoryIds : [ String ]
-        } ]
+        } ],
+        linkGroups : [ schemas.LinkGroups ]
     },
     Category : { // uniq:[channel + type + name], [channel + type + title];
         // url: /channel/brand/[prodType]-[efficacy]-[skinType]
@@ -89,15 +100,7 @@ var collections = {
             name : String,
             value : String,
         } ],
-        linkGroups : [ {
-            title : String,
-            type : String,
-            links : [ {
-                text : String,
-                url : String,
-                image : String
-            } ]
-        } ]
+        linkGroups : [ schemas.LinkGroups ]
     },
 };
 

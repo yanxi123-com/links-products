@@ -15,7 +15,7 @@ var imageMagick = require('gm').subClass({
     imageMagick : true
 });
 
-exports.manage = require('./manage/manage');
+exports.manage = require('./manage/index');
 
 exports.channel = function(req, res, next) {
     var channelName = req.params[0] || 'home';
