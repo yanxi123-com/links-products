@@ -68,87 +68,6 @@
     </div>
 </div>
 
-<div id="new-link" title="创建新链接">
-    <fieldset>
-        <input type="hidden" id="newLinkAreaId" />
-        <label>文字</label>
-        <input type="text" id="newLinkText" class="ui-widget-content ui-corner-all" />
-        <br/><br/>
-        <label>网址</label>
-        <input type="text" name="url" id="newLinkUrl" class="text ui-widget-content ui-corner-all" style="width:90%" />
-        <br/><br/>
-        <label>图片</label>
-        <input type="text" name="image" id="newLinkImage" class="text ui-widget-content ui-corner-all" style="width:90%" />
-    </fieldset>
-</div>
-
-<div id="change-link" title="修改链接">
-    <fieldset>
-        <input type="hidden" id="changeLinkId" />
-        <input type="hidden" id="changeLinkAreaId" />
-        <label>文字</label>
-        <input type="text" id="changeLinkText" class="ui-widget-content ui-corner-all" />
-        <br/><br/>
-        <label>网址</label>
-        <input type="text" name="url" id="changeLinkUrl" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
-        <br/><br/>
-        <label>图片</label>
-        <input type="text" name="image" id="changeLinkImage" onclick="this.select()" class="text ui-widget-content ui-corner-all" style="width:90%" />
-    </fieldset>
-</div>
-
-<div id="new-area" title="创建新区域">
-    <hr class="space"/>
-    <fieldset>
-        <label>标题：</label>
-        <input type="text" id="newAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
-        <br/><br/>
-        <label>类型：</label>
-        <label for="newAreaTypeCategory">
-            <input type="radio" name="newAreaType" checked="checked" value="category" id="newAreaTypeCategory" />分类区域
-        </label> &nbsp;
-        <label for="newAreaTypeBrand">
-            <input type="radio" name="newAreaType" value="brand" id="newAreaTypeBrand" />品牌区域
-        </label>
-    </fieldset>
-</div>
-
-<div id="change-area" title="修改区域标题">
-    <hr class="space"/>
-    <fieldset>
-        <input type="hidden" id="changeAreaId" />
-        <label>标题：</label>
-        <input type="text" id="changeAreaTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
-        <br/><br/>
-        <span>类型：</span>
-        <span id="changeAreaType"></span><br/><br/>
-        <span>修改：</span>
-        <label for="changeAreaTypeCategory">
-            <input type="radio" name="changeAreaType" value="category" id="changeAreaTypeCategory" />分类区域
-        </label> &nbsp;
-        <label for="changeAreaTypeBrand">
-            <input type="radio" name="changeAreaType" value="brand" id="changeAreaTypeBrand" />品牌区域
-        </label>
-    </fieldset>
-</div>
-
-<div id="delete-area" title="确认删除区域?">
-    <input type="hidden" id="deleteAreaId" />
-    <p>
-        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-        <span>删除后无法恢复，确定要删除整个区域吗？</span>
-    </p>
-</div>
-
-<div id="delete-link" title="确认删除链接?">
-    <input type="hidden" id="deleteLinkId" />
-    <input type="hidden" id="deleteAreaId" />
-    <p>
-        <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-        <span>删除后无法恢复，确定要此链接吗？</span>
-    </p>
-</div>
-
 <div id="change-page" title="修改页面信息">
     <hr class="space"/>
     <fieldset>
@@ -159,5 +78,7 @@
         <input type="text" value="{%= page.title || '' %}" id="changePageTitle" class="ui-widget-content ui-corner-all" style="width:90%" />
     </fieldset>
 </div>
+
+{% include ../include/manage-links %}
 
 {% include ../include/footer %}

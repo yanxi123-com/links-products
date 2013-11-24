@@ -290,6 +290,9 @@ $(function() {
     });
 });
 </script>
+
+<div id="main" data-pageId='{%= product.id %}' data-collection="Product" data-collection-id="{%= product.id %}"></div>
+
 <div class="container" style="min-height:300px">
     <input type="hidden" id="prodId" value="{%= product.id %}" />
     <input type="hidden" id="removeCategoryId" />
@@ -373,6 +376,50 @@ $(function() {
             })
         %}
         </ul>
+        <div class="clear"></div>
+        <h3>
+	       <span>增加新区域</span> <a class="new-area" href="javascript:void(0)"><span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+	    </h3>
+	    {% product.linkGroups.forEach(function(area) { %}
+	        <h3>
+	            <span id="title-{%= area.id %}">{%= area.title %}</span> <span>({%= area.links.length %})</span>
+	            <a class="new-link" data-area-id="{%= area.id %}" href="javascript:void(0)">
+	                <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+	            {% if (area.links.length == 0) { %}
+	            <a class="delete-area" data-area-id="{%= area.id %}" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+	            {% } %}
+	            <a class="change-area" data-area-id="{%= area.id %}" data-area-type="{%= area.type %}" href="javascript:void(0)">
+	                <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+	        </h3>
+	        <div class="clearfix">
+	        <ul class="links">
+	            {% area.links.forEach(function(link) { %}
+	                <li data-area-id="{%= area.id %}" data-link-id="{%= link.id %}">
+	                    <a class="current-link" target="_blank" href="{%= link.url %}">{%= link.text %}</a>
+	                    <a class="delete-link" href="javascript:void(0)"><span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+	                    <a class="change-link" href="javascript:void(0)"><span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
+	                    {% if (link.image) { %}
+	                        <br/>
+	                        <img class="link-image" src="//img.qiri.com{%= link.image %}"/>
+	                    {% } %}
+	                </li>
+	            {% }) %}
+	        </ul>
+	        <ul class="links" data-area="{%= area.id %}">
+	            {%
+	                (area.links && []).forEach(function(link) {
+	            %}
+	                <li data-id="{%= link.id %}">
+	                    <span>文字</span><input value="{%= link.text %}" onclick="this.select()" /><br/>
+	                    <span>网址</span><input value="{%= link.url %}" onclick="this.select()" /><br/>
+	                    <span>图片</span><input value="{%= link.image %}" onclick="this.select()" /><br/>
+	                </li>
+	            {%
+	                }) 
+	            %}
+	        </ul>
+	        </div>
+	    {% }) %}
     </div>
 </div>
 <hr class="space"/>
@@ -416,5 +463,7 @@ $(function() {
         <span>删除后无法恢复，确定要此属性吗？</span>
     </p>
 </div>
+
+{% include ../include/manage-links %}
 
 {% include ../include/footer %}

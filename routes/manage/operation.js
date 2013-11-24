@@ -23,7 +23,6 @@ exports.addLink = function(req, res, next) {
                     'linkGroups.$.links' : link
                 }
             }, callback);
-            m.Link.create(link, callback);
         }
     }, function(err, results) {
         if (err) {
