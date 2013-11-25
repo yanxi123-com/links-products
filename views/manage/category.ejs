@@ -264,6 +264,32 @@ $(function() {
             });
         }
     });
+    
+    $('.change-categoryGroup').click(function() {
+        var groupId = $(this).data('group-id');
+        var oldTitle = $(this).data('group-title')
+        var newTitle = prompt('请输入新的分组标题:', oldTitle);
+        if (!newTitle || newTitle == oldTitle) {
+            return;
+        }
+        $.ajax('/manage/operation', {
+            type : 'POST',
+            data : {
+                action : "changeCategoryGroup",
+                pageId : $('#pageId').val(),
+                groupId : groupId,
+                title : newTitle
+            },
+            dataType : 'json',
+            success : function(json) {
+                if (json.error) {
+                    return alert(json.error);
+                }
+
+                location = document.location;
+            }
+        });
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
@@ -275,6 +301,8 @@ $(function() {
         <h3>按{%= group.title %}
 	        <a class="new-category" data-group="{%= group.name %}" href="javascript:void(0)">
 	            <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
+	        <a class="change-categoryGroup" data-group-id="{%= group.id %}" data-group-title="{%= group.title %}" href="javascript:void(0)">
+                <span class="ui-icon ui-icon-wrench" style="display: inline-block"></span></a>
 	        {% if (!groupCategories[group.name]) { %}
                 <a class="delete-categoryGroup" data-group-id="{%= group.id %}" href="javascript:void(0)">
                     <span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>

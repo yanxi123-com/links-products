@@ -668,3 +668,27 @@ exports.deleteProduct = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.changeCategoryGroup = function(req, res, next) {
+    var pageId = req.body.pageId;
+    var groupId = req.body.groupId;
+    var title = req.body.title;
+
+    async.auto({
+        update : function(callback) {
+            m.Page.update({
+                _id : new ObjectId(pageId),
+                'categoryGroups._id' : new ObjectId(groupId)
+            }, {
+                $set : {
+                    'categoryGroups.$.title' : title
+                }
+            }, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};
