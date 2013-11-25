@@ -75,7 +75,13 @@ exports.products = function(req, res, next) {
             funcs.getGroupCategories(results.page, callback);
         }],
         products : function(callback) {
-            m.Product.find({channel: channel}, 'name image', callback);
+            m.Product.find({
+                channel : channel
+            }, 'name image', {
+                sort : {
+                    addDate : -1
+                }
+            }, callback);
         }
     }, function(err, results) {
         var page = results.page;

@@ -653,3 +653,18 @@ exports.changeProductImage = function(req, res, next) {
         res.json({});
     });
 };
+
+exports.deleteProduct = function(req, res, next) {
+    var prodId = req.body.prodId;
+
+    async.auto({
+        deleteProd : function(callback) {
+            m.Product.findByIdAndRemove(prodId, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.json({});
+    });
+};

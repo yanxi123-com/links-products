@@ -50,6 +50,27 @@ $(function() {
         $('#newProdName').val('');
         $("#new-product").dialog("open");
     });
+    
+    $('.delete-product').click(function() {
+        if (!confirm('确实要删除此商品？')) {
+            return;
+        }
+        var prodId = $(this).data('prod-id');
+        $.ajax('/manage/operation', {
+            type : 'POST',
+            data : {
+                action : "deleteProduct",
+                prodId : prodId
+            },
+            dataType : 'json',
+            success : function(json) {
+                if (json.error) {
+                    return alert(json.error);
+                }
+                location = document.location;
+            }
+        });
+    });
 });
 </script>
 <div class="container" style="min-height:300px">
@@ -63,9 +84,13 @@ $(function() {
         {% products.forEach(function(product) { %}
             <li>
                 <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
+                <a class="delete-product" data-prod-id="{%= product.id %}" href="javascript:void(0)">
+                    <span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
                 {% if (product.image) { %}
                     <div class="list-prod-image">
-                    <img src="/pimg{%= product.image %}?width=200&height=200"/>
+                    <a href="/manage/product?id={%= product.id %}">
+                        <img src="/pimg{%= product.image %}?width=200&height=200"/>
+                    </a>
                     </div>
                 {% } %}
             </li>

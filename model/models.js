@@ -84,7 +84,11 @@ var collections = {
             name : String,
             value : String,
         } ],
-        linkGroups : [ schemas.LinkGroups ]
+        linkGroups : [ schemas.LinkGroups ],
+        addDate : {
+            type : Date,
+            "default" : Date.now
+        }
     },
 };
 
