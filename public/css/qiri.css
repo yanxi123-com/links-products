@@ -222,6 +222,7 @@ li {float:left; list-style:none}
 
 
 ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
+ul.products li {width:237px}
 
 .vertical {
     background: url("/img/dotted-1x4.gif") repeat-y 255px 0;

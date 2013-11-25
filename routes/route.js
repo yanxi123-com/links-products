@@ -8,7 +8,6 @@ var config = require('../config').config;
 var fs = require('node-fs');
 var path = require('path');
 var QiriError = require('../model/qiri-err');
-var crypto = require('crypto');
 var utils = require('../model/utils');
 var funcs = require('./functions');
 var imageMagick = require('gm').subClass({

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var async = require('async');
 var path = require('path');
+var crypto = require('crypto');
 
 var m = require('../../model/models').models;
 var config = require('../../config').config;

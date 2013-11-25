@@ -290,7 +290,7 @@ $(function() {
     });
     
     $('.change-image').click(function() {
-        var imageUrl = prompt('请输入商家商品ID', '');
+        var imageUrl = prompt('请输入图片地址:', '');
         if (!imageUrl) {
             return;
         }
@@ -334,7 +334,9 @@ $(function() {
     </h2>
     <div class="span-8">
         {% if (product.image) { %}
-            <img src="/pimg{%= product.image %}?width=300&height=300" style="max-height:300px; max-width:300px" />
+            <div class="detail-prod-image">
+                <img src="/pimg{%= product.image %}?width=300&height=300" />
+            </div>
         {% } %}
         <hr class="space"/>
         <form action="/manage/product-image" enctype="multipart/form-data" method="post">

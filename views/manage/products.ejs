@@ -4,7 +4,7 @@
 $(function() {
     $("#new-product").dialog({
         autoOpen : false,
-        height : 180,
+        height : 220,
         width : 500,
         modal : true,
         buttons : {
@@ -12,7 +12,15 @@ $(function() {
                 var button = this;
                 var product = {
                     channel : $('#newProdChannel').val(),
-                    name : $('#newProdName').val()
+                    name : $('#newProdName').val(),
+                    linkGroups : [ {
+                        title : '更多链接',
+                        type : 'private',
+                        links : [{
+                            text : '官方页面',
+                            url : $('#newProdFromUrl').val()
+                        }]
+                    } ]
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
@@ -51,13 +59,14 @@ $(function() {
             <span class="ui-icon ui-icon-plus" style="display: inline-block"></span></a>
     </h2>
     
-    <ul class="links">
+    <ul class="products">
         {% products.forEach(function(product) { %}
             <li>
                 <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
                 {% if (product.image) { %}
-                    <br/>
-                    <img class="link-image" src="/pimg{%= product.image %}?width=200&height=200"/>
+                    <div class="list-prod-image">
+                    <img src="/pimg{%= product.image %}?width=200&height=200"/>
+                    </div>
                 {% } %}
             </li>
         {% }) %}
@@ -70,6 +79,9 @@ $(function() {
         <input type="hidden" id="newProdChannel" value="{%= page.name %}" />
         <label>名称</label>
         <input type="text" id="newProdName" class="ui-widget-content ui-corner-all" style="width:90%" />
+        <br/><br/>
+        <label>官网</label>
+        <input type="text" id="newProdFromUrl" class="ui-widget-content ui-corner-all" style="width:90%" />
         </p>
     </fieldset>
 </div>
