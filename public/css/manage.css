@@ -25,3 +25,5 @@ ul.links li, ul.categories li {width: 190px;}
     max-height:200px; 
     max-width:200px
 }
+
+.products li .nowrap {width:200px}

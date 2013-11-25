@@ -486,4 +486,4 @@ a {color:#0063DC; text-decoration:none;}
 .under-link a {text-decoration:underline;}
 .underline {text-decoration:underline;}
 .bold {font-weight:bold;}
-
+.nowrap {white-space:nowrap; overflow: hidden}

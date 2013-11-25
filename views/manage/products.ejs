@@ -83,9 +83,11 @@ $(function() {
     <ul class="products">
         {% products.forEach(function(product) { %}
             <li>
-                <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
+                <div class="nowrap">
                 <a class="delete-product" data-prod-id="{%= product.id %}" href="javascript:void(0)">
                     <span class="ui-icon ui-icon-minus" style="display: inline-block"></span></a>
+                <a href="/manage/product?id={%= product.id %}">{%= product.name %}</a>
+                </div>
                 {% if (product.image) { %}
                     <div class="list-prod-image">
                     <a href="/manage/product?id={%= product.id %}">
