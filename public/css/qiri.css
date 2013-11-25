@@ -220,13 +220,13 @@ li {float:left; list-style:none}
 }
 .footer {border-top: 3px solid #FC763E; margin-top:15px; padding-top:15px;}
 
-
-ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
-ul.products li {width:237px}
-
 .vertical {
     background: url("/img/dotted-1x4.gif") repeat-y 255px 0;
 }
+
+ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
+ul.products li {width:237px;}
+
 ul.links li {width:111px}
 ul.brands li {width:111px}
 ul.brands li img {width:90px; height:45px}

@@ -1,5 +1,7 @@
 ul.links li, ul.categories li {width: 190px;}
 
+ul.products li {margin-bottom:10px}
+
 .ui-selected { background: #F39814; color: white; }
 
 .detail-prod-image {
