@@ -9,6 +9,7 @@ ul.products li {margin-bottom:10px}
 	height:300px;
 	width:300px; 
 	border: 1px solid #DDD;
+	padding: 10px;
 }
 
 .list-prod-image {
@@ -16,11 +17,12 @@ ul.products li {margin-bottom:10px}
     height:200px;
     width:200px; 
     border: 1px solid #DDD;
+    padding: 10px
 }
 
 .detail-prod-image img {
-	max-height:300px; 
-	max-width:300px
+	max-height:280px; 
+	max-width:280px
 }
 
 .list-prod-image img {
@@ -28,4 +30,4 @@ ul.products li {margin-bottom:10px}
     max-width:200px
 }
 
-.products li .nowrap {width:200px}
+.products li .nowrap {width:180px}
