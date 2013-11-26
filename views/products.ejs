@@ -1,0 +1,28 @@
+{% headTitle = page.title %}
+{% include include/header %}
+
+<div class="container" style="min-height:300px">
+    <input type="hidden" id="categoryChannel" value="{%= page.name %}" />
+    <h2>{%= brandCategory.title %}
+    </h2>
+    
+    <ul class="products">
+        {% products.forEach(function(product) { %}
+            <li>
+                <div class="nowrap">
+                <a href="/product/{%= product.id %}">{%= product.name %}</a>
+                </div>
+                {% if (product.image) { %}
+                    <div class="list-prod-image">
+                    <a href="/product/{%= product.id %}">
+                        <img src="/pimg{%= product.image %}?width=180&height=180"/>
+                    </a>
+                    </div>
+                {% } %}
+            </li>
+        {% }) %}
+    </ul>
+</div>
+
+
+{% include include/footer %}
