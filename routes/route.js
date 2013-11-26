@@ -4,9 +4,11 @@
 
 var _ = require('underscore');
 var async = require('async');
-var config = require('../config').config;
 var fs = require('node-fs');
 var path = require('path');
+
+var config = require('../config').config;
+var m = require('../model/models').models;
 var QiriError = require('../model/qiri-err');
 var utils = require('../model/utils');
 var funcs = require('./functions');
@@ -24,6 +26,44 @@ exports.channel = function(req, res, next) {
 exports.brand = function(req, res, next) {
     var brand = req.params[1];
     funcs.venderPage(brand, 'brand')(req, res, next);
+};
+
+exports.product = function(req, res, next) {
+    var prodId = req.params.prodId;
+    async.auto({
+        product : function(callback) {
+            m.Product.findById(prodId, function(err, product) {
+                console.log(product);
+                callback(err || !product, product);
+            });
+        },
+        page : ['product', function(callback, results) {
+            m.Page.findOne({
+                type : 'channel',
+                name : results.product.channel
+            }, callback);
+        }],
+        categories : [ 'product', function(callback, results) {
+            m.Category.find({
+                _id : {
+                    $in : results.product.categoryIds
+                }
+            }, callback);
+        } ],
+        categoryGroup : [ 'page', 'categories', function(callback, results) {
+            callback(null, _(results.categories).groupBy(function(cate) {
+                return cate.group;
+            }));
+        } ],
+    }, function(err, results) {
+        if (!results.product) {
+            return next(new QiriError(404));
+        }
+        if (err) {
+            return next(err);
+        }
+        res.render('product', results);
+    });
 };
 
 exports.showProductImage = function(req, res, next) {

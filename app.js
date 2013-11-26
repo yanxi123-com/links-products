@@ -42,6 +42,8 @@ app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.channel);
 app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)/, routes.brand);
 app.get(/^\/pimg\/(.*)$/, routes.showProductImage);
 
+app.get('/product/:prodId', routes.product);
+
 // management
 app.all(/^\/manage\b/, routes.manage.checkLogin);
 

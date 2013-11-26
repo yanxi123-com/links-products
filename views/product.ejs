@@ -1,0 +1,70 @@
+{% headTitle = product.name %}
+{% include include/header %}
+
+<div id="main" data-pageId='{%= product.id %}' data-collection="Product" data-collection-id="{%= product.id %}"></div>
+
+<div class="container" style="min-height:300px">
+    <input type="hidden" id="prodId" value="{%= product.id %}" />
+    <input type="hidden" id="removeCategoryId" />
+    <h2>{%= product.name %}</h2>
+    <div class="span-8">
+        {% if (product.image) { %}
+            <div class="detail-prod-image">
+                <img src="/pimg{%= product.image %}?width=280&height=280" />
+            </div>
+        {% } %}
+    </div>
+    
+    <div class="span-16 last product-info">
+        <ul>
+            {% if (product.listPrice) { %}
+            <li><b>定价:</b>
+	            <span data-basic-key="listPrice">{%= product.listPrice %}</span>
+            </li>
+            {% } %}
+            
+            {%
+                page.categoryGroups.forEach(function(group) {
+            %}
+                <li>
+                    <b>{%= group.title %}：</b>
+                    {%
+                        categoryGroup[group.name].forEach(function(category) {
+                            %}{%= category.title %}{%
+                        })
+                    %}
+                </li>
+            {%
+                })
+            %}
+            
+            {%
+	            product.props.forEach(function(prop) {
+	        %}
+	            <li>
+	                <b>{%= prop.name %}：</b> {%= prop.value %}
+	            </li>
+	        {%
+	            })
+	        %}
+        </ul>
+        <div class="clear"></div>
+        <h3>购买本产品</h3>
+        <ul>
+        {%
+            product.venders.forEach(function(vender) {
+        %}
+            <li>
+                <a target="_blank" {%- vender.linkAttrs %}>去{%= vender.name %}购买</a>
+            </li>
+        {%
+            })
+        %}
+        
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+<hr class="space"/>
+
+{% include include/footer %}
