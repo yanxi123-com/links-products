@@ -24,8 +24,52 @@ exports.channel = function(req, res, next) {
 };
 
 exports.brand = function(req, res, next) {
-    var brand = req.params[1];
-    funcs.venderPage(brand, 'brand')(req, res, next);
+    var channel = req.params[0];
+    var brandName = req.params[1];
+    
+    async.auto({
+        page : function(callback) {
+            m.Page.findOne({
+                type : 'channel',
+                name : channel
+            }, function(err, page) {
+                if (!page) {
+                    return callback(new QiriError(404));
+                }
+                callback(null, page);
+            });
+        },
+        groupCategories : ['page', function(callback, results) {
+            funcs.getGroupCategories(results.page, callback);
+        }],
+        brandCategory : function(callback) {
+            m.Category.findOne({
+                channel : channel,
+                group : 'brand',
+                name : brandName
+            }, function(err, brandCategory) {
+                if (!brandCategory) {
+                    return callback(new QiriError(404));
+                }
+                callback(null, brandCategory);
+            });
+        },
+        products : ['brandCategory', function(callback, results) {
+            m.Product.find({
+                channel : channel,
+                categoryIds : results.brandCategory.id
+            }, 'name image', {
+                sort : {
+                    addDate : -1
+                }
+            }, callback);
+        }]
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.render("products", results);
+    });
 };
 
 exports.product = function(req, res, next) {
@@ -33,7 +77,6 @@ exports.product = function(req, res, next) {
     async.auto({
         product : function(callback) {
             m.Product.findById(prodId, function(err, product) {
-                console.log(product);
                 callback(err || !product, product);
             });
         },
