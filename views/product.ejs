@@ -30,7 +30,11 @@
                     <b>{%= group.title %}：</b>
                     {%
                         categoryGroup[group.name].forEach(function(category) {
-                            %}{%= category.title %}{%
+                            if (category.group == 'brand') {
+                                %}<a href="/{%= page.name %}/{%= category.name %}">{%= category.title %}</a>{%
+                            } else {
+                                %}{%= category.title %}{%
+                            }
                         })
                     %}
                 </li>
@@ -49,7 +53,7 @@
 	        %}
         </ul>
         <div class="clear"></div>
-        <h3>购买本产品</h3>
+        <div style="margin:10px 0 5px"><b>购买本产品</b></div>
         <ul>
         {%
             product.venders.forEach(function(vender) {

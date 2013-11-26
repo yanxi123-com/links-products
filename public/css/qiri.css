@@ -232,7 +232,7 @@ ul.brands li {width:111px}
 ul.brands li img {width:90px; height:45px}
 ul.brands li div.text {padding:12px 10px; border:1px solid #EEE; margin:0 10px 0 0; white-space:nowrap; overflow: hidden; text-align:center}
 
-.product-info {font-size: 14px;}
+.product-info {font-size: 14px; line-height:1.6}
 .product-info ul li {width:100%; margin:5px 0}
 
 /* prod image */
