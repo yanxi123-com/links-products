@@ -115,7 +115,7 @@ exports.product = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        var categoryHash = utils.toHash(results.product.categoryIds, _.identity);
+        var categoryHash = _(results.product.categoryIds).indexBy(_.identity);
         results['categoryIdHash'] = categoryHash;
         res.render("manage/product", results);
     });

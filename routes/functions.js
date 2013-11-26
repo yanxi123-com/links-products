@@ -31,7 +31,7 @@ var getGroupCategories = function(page, callback) {
         });
         var sortedGroups = {};
         _(groups).each(function(categories, group) {
-            var categoryIds = utils.toHash(page.categoryGroups, 'name')[group].categoryIds;
+            var categoryIds = _.indexBy(page.categoryGroups, 'name')[group].categoryIds;
             var sortedCategories = utils.sortById(categories, categoryIds);
             sortedGroups[group] = sortedCategories;
         });

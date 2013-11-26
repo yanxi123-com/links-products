@@ -76,7 +76,7 @@ exports.changeLink = function(req, res, next) {
             });
         },
         update : [ 'linkGroups', function(callback, results) {
-            var groups = utils.toHash(results.linkGroups, 'id');
+            var groups = _.indexBy(results.linkGroups, 'id');
             var links = groups[groupId].links;
             _(links).each(function(dbLink) {
                 if (dbLink.id === linkId) {
@@ -116,7 +116,7 @@ exports.sortLink = function(req, res, next) {
             });
         },
         update : [ 'linkGroups', function(callback, results) {
-            var groups = utils.toHash(results.linkGroups, 'id');
+            var groups = _.indexBy(results.linkGroups, 'id');
             var links = utils.sortById(groups[groupId].links, linkIds);
             m[collection].update({
                 _id : new ObjectId(collectionId),
