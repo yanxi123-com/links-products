@@ -225,7 +225,7 @@ li {float:left; list-style:none}
 }
 
 ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
-ul.products li {width:237px;}
+ul.products li {width:237px; margin-bottom:12px}
 
 ul.links li {width:111px}
 ul.brands li {width:111px}
