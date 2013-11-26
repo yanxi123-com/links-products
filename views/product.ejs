@@ -29,7 +29,10 @@
                 <li>
                     <b>{%= group.title %}：</b>
                     {%
-                        categoryGroup[group.name].forEach(function(category) {
+                        categoryGroup[group.name].forEach(function(category, index) {
+                            if (index > 0) {
+                                %}&nbsp; &nbsp; {%
+                            }
                             if (category.group == 'brand') {
                                 %}<a href="/{%= page.name %}/{%= category.name %}">{%= category.title %}</a>{%
                             } else if (category.group == 'prodType') {
