@@ -32,6 +32,10 @@
                         categoryGroup[group.name].forEach(function(category) {
                             if (category.group == 'brand') {
                                 %}<a href="/{%= page.name %}/{%= category.name %}">{%= category.title %}</a>{%
+                            } else if (category.group == 'prodType') {
+                                %}<a href="/{%= page.name %}/all/{%= category.name %}">{%= category.title %}</a>{%
+                            } else if (category.group == 'efficacy') {
+                                %}<a href="/{%= page.name %}/all/all-{%= category.name %}">{%= category.title %}</a>{%
                             } else {
                                 %}{%= category.title %}{%
                             }

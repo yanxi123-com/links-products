@@ -23,9 +23,8 @@ exports.channel = function(req, res, next) {
     funcs.venderPage(channelName, 'channel')(req, res, next);
 };
 
-exports.brand = function(req, res, next) {
+exports.products = function(req, res, next) {
     var channel = req.params[0];
-    var brandName = req.params[1];
     
     async.auto({
         page : function(callback) {
@@ -42,22 +41,47 @@ exports.brand = function(req, res, next) {
         groupCategories : ['page', function(callback, results) {
             funcs.getGroupCategories(results.page, callback);
         }],
-        brandCategory : function(callback) {
-            m.Category.findOne({
-                channel : channel,
-                group : 'brand',
-                name : brandName
-            }, function(err, brandCategory) {
-                if (!brandCategory) {
+        categories : ['page', function(callback, results) {
+            var page = results.page;
+            var cates = _(page.categoryGroups).map(function(group, index) {
+                var cateName = req.params[index + 1];
+                if (!cateName || cateName == 'all') {
+                    return null;
+                }
+                return {
+                    group : group.name,
+                    name : cateName 
+                };
+            });
+            var tasks = _.map(_.filter(cates, _.identity), function(cate) {
+                return function(cb) {
+                    m.Category.findOne({
+                        channel : channel,
+                        group : cate.group,
+                        name : cate.name
+                    }, cb);
+                };
+            });
+            async.parallel(tasks, function(err, cates) {
+                if (!_(cates).every(_.identity)) {
                     return callback(new QiriError(404));
                 }
-                callback(null, brandCategory);
+
+                callback(null, cates);
             });
-        },
-        products : ['brandCategory', function(callback, results) {
+        }],
+        products : ['categories', function(callback, results) {
+            var categoryIds = _(results.categories).map(function(category) {
+                return category.id;
+            });
+            var $and = _.map(categoryIds, function(categoryId) {
+                return {
+                    categoryIds : categoryId
+                };
+            });
             m.Product.find({
                 channel : channel,
-                categoryIds : results.brandCategory.id
+                $and : $and
             }, 'name image', {
                 sort : {
                     addDate : -1

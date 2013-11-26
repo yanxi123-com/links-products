@@ -3,7 +3,10 @@
 
 <div class="container" style="min-height:300px">
     <input type="hidden" id="categoryChannel" value="{%= page.name %}" />
-    <h2>{%= brandCategory.title %}
+    <h2>
+        {% categories.forEach(function(category, index) {
+            %}{%= index > 0 ? '&nbsp;&nbsp;' : '' %}{%= category.title %}{%        
+        }) %}
     </h2>
     
     <ul class="products">
