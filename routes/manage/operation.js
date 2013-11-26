@@ -573,7 +573,6 @@ exports.sortProductProp = function(req, res, next) {
         },
         updatePage : ['props', function(callback, results) {
             var sortedProps = utils.sortById(results.props, propIds);
-            console.log(sortedProps);
             m.Product.findByIdAndUpdate(prodId, {
                 $set : {
                     props : sortedProps
