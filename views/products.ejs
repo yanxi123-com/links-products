@@ -12,18 +12,19 @@
     <div style="border:1px solid #CCC; padding:10px; margin:20px 0; font-size:14px">
     {%
         var getCateUrl = function(cateGroup, cateName) {
-            var url = '/' + page.name;
+            var catePart = '';
             page.categoryGroups.forEach(function(group) {
                 if (cateGroup === group.name) {
                     if (cateName) {
-                        url += '/' + cateName;
+                        catePart += '/' + cateName;
                     }
                     return;
                 } else if (categoryGroup[group.name]) {
-                    url += '/' + categoryGroup[group.name].name;
+                    catePart += '/' + categoryGroup[group.name].name;
                 }
-            });       
-            return url;
+            });
+            catePart = catePart || '/all';
+            return '/' + page.name + catePart;
         };
         page.categoryGroups.forEach(function(group, index) {
             if (index > 0) {

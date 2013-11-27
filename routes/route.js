@@ -43,6 +43,9 @@ exports.products = function(req, res, next) {
             funcs.getGroupCategories(results.page, callback);
         }],
         categories : ['page', function(callback, results) {
+            if (req.params[1] === 'all') {
+                return callback(null, []);
+            }
             var cateNames = req.params[1].split(/\//g);
             var tasks = _.map(cateNames, function(cateName) {
                 return function(cb) {
@@ -70,10 +73,13 @@ exports.products = function(req, res, next) {
                     categoryIds : categoryId
                 };
             });
-            m.Product.find({
-                channel : channel,
-                $and : $and
-            }, 'name image', {
+            var conditions = {
+                channel : channel
+            };
+            if ($and.length) {
+                conditions.$and = $and;
+            }
+            m.Product.find(conditions, 'name image', {
                 sort : {
                     addDate : -1
                 }
