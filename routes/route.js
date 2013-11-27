@@ -88,7 +88,6 @@ exports.products = function(req, res, next) {
                     categoryIds : categoryId
                 };
             });
-            console.log($and);
             m.Product.find({
                 channel : channel,
                 $and : $and
