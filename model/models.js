@@ -66,8 +66,8 @@ var collections = {
         } ],
         linkGroups : [ schemas.LinkGroups ]
     },
-    Category : { // uniq:[channel + type + name], [channel + type + title];
-        // url: /channel/brand/[prodType]-[efficacy]-[skinType]
+    Category : { // uniq:[channel + name], [channel + title];
+        // url: /channel/[brand]/[prodType]/[efficacy]
         channel : String,
         group : String,
         name : String,

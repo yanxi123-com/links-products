@@ -43,30 +43,12 @@ exports.products = function(req, res, next) {
             funcs.getGroupCategories(results.page, callback);
         }],
         categories : ['page', function(callback, results) {
-            var page = results.page;
-            var cates = _(page.categoryGroups).map(function(group, index) {
-                var cateName = req.params[index + 1] || 'all';
-                if (cateName === 'all') {
-                    return null;
-                }
-                return {
-                    group : group.name,
-                    name : cateName
-                };
-            });
-            var tasks = _.map(cates, function(cate) {
-                if (!cate) {
-                    return function(cb) {
-                        return cb(null, {
-                            name : 'all',
-                        });
-                    };
-                }
+            var cateNames = req.params[1].split(/\//g);
+            var tasks = _.map(cateNames, function(cateName) {
                 return function(cb) {
                     m.Category.findOne({
                         channel : channel,
-                        group : cate.group,
-                        name : cate.name
+                        name : cateName
                     }, cb);
                 };
             });
@@ -101,9 +83,7 @@ exports.products = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        results.filterCategories = _.filter(results.categories, function(cate) {
-            return cate.title;
-        });
+        results.categoryGroup = _.indexBy(results.categories, 'group');
         res.render("products", results);
     });
 };

@@ -39,9 +39,7 @@ app.configure(function() {
 
 // home
 app.get(/^\/(|skincare|makeup|men|perfume|health)\/?$/, routes.channel);
-app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)\/?$/, routes.products);
-app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)\/([a-z]+)\/?$/, routes.products);
-app.get(/^\/(skincare|makeup|men|perfume|health)\/([a-z]+)\/([a-z]+)-([a-z]+)\/?$/, routes.products);
+app.get(/^\/(skincare|makeup|men|perfume|health)\/(.+)\/?$/, routes.products);
 app.get(/^\/pimg\/(.*)$/, routes.showProductImage);
 
 app.get('/product/:prodId', routes.product);
