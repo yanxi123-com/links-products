@@ -4,10 +4,52 @@
 <div class="container" style="min-height:300px">
     <input type="hidden" id="categoryChannel" value="{%= page.name %}" />
     <h2>
-        {% categories.forEach(function(category, index) {
+        {% filterCategories.forEach(function(category, index) {
             %}{%= index > 0 ? '&nbsp;&nbsp;' : '' %}{%= category.title %}{%        
         }) %}
     </h2>
+    
+    <div style="border:1px solid #CCC; padding:10px; margin:20px 0; font-size:14px">
+    {%
+        var getCateUrl = function(index, name) {
+            var url = '/' + page.name;
+            page.categoryGroups.forEach(function(group, i) {
+                url += i < 2 ? '/' : '-';
+                if (i == index) {
+                    url += name;
+                } else {
+                    url += categories[i].name;
+                }
+            });
+            url = url.replace(/-all$/, '');
+            while (url.match(/\/all$/)) {
+                url = url.replace(/\/all$/, '');
+            }
+            return url;
+        };
+        page.categoryGroups.forEach(function(group, index) {
+            if (index > 0) {
+                %}<hr/>{%
+            }
+            %}
+            <div class="span-2">{%= group.title %}：</div>
+            <ul class="head-cates clearfix">
+            <li><a href="{%= getCateUrl(index, 'all') %}" class="{%=
+                    'all' === categories[index].name ? 'ui-selected' : '' 
+                %}">全部</a></li>
+            {%
+            (groupCategories[group.name] || []).forEach(function(category, i) { %}
+            <li>
+                <a href="{%= getCateUrl(index, category.name) %}" class="{%=
+                    category.name === categories[index].name ? 'ui-selected' : '' 
+                %}">{%= category.title %}</a>
+            </li>
+            {% })
+            %}</ul><div class="clear"></div>
+            {%
+        })
+    %}
+    </div>
     
     <ul class="products">
         {% products.forEach(function(product) { %}

@@ -6,6 +6,7 @@ var _ = require('underscore');
 var async = require('async');
 var fs = require('node-fs');
 var path = require('path');
+var request = require('request');
 
 var config = require('../config').config;
 var m = require('../model/models').models;
@@ -44,16 +45,23 @@ exports.products = function(req, res, next) {
         categories : ['page', function(callback, results) {
             var page = results.page;
             var cates = _(page.categoryGroups).map(function(group, index) {
-                var cateName = req.params[index + 1];
-                if (!cateName || cateName == 'all') {
+                var cateName = req.params[index + 1] || 'all';
+                if (cateName === 'all') {
                     return null;
                 }
                 return {
                     group : group.name,
-                    name : cateName 
+                    name : cateName
                 };
             });
-            var tasks = _.map(_.filter(cates, _.identity), function(cate) {
+            var tasks = _.map(cates, function(cate) {
+                if (!cate) {
+                    return function(cb) {
+                        return cb(null, {
+                            name : 'all',
+                        });
+                    };
+                }
                 return function(cb) {
                     m.Category.findOne({
                         channel : channel,
@@ -74,11 +82,13 @@ exports.products = function(req, res, next) {
             var categoryIds = _(results.categories).map(function(category) {
                 return category.id;
             });
-            var $and = _.map(categoryIds, function(categoryId) {
+            var filterCateIds = _.filter(categoryIds, _.identity);
+            var $and = _.map(filterCateIds, function(categoryId) {
                 return {
                     categoryIds : categoryId
                 };
             });
+            console.log($and);
             m.Product.find({
                 channel : channel,
                 $and : $and
@@ -92,6 +102,9 @@ exports.products = function(req, res, next) {
         if (err) {
             return next(err);
         }
+        results.filterCategories = _.filter(results.categories, function(cate) {
+            return cate.title;
+        });
         res.render("products", results);
     });
 };
@@ -145,7 +158,12 @@ exports.showProductImage = function(req, res, next) {
     var resizeFilePath = path.join(resizePath, width + '-' + height, imgPath);
     
     if (require('os').type().match(/windows/i)) {
-        res.sendfile(originFilePath);
+        if (fs.existsSync(originFilePath)) {
+            res.sendfile(originFilePath);
+            return;
+        }
+        var remoteUrl = 'http://qiri.com' + req.originalUrl;
+        request.get(remoteUrl).pipe(res);
         return;
     }
     

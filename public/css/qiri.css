@@ -227,6 +227,9 @@ li {float:left; list-style:none}
 ul.links li, ul.areas li, ul.brands li, ul.categories li, ul.groups li {width:190px; margin:0 0 10px}
 ul.products li {width:237px; margin-bottom:12px}
 
+ul.head-cates li {padding:0 5px}
+ul.head-cates li a {padding:2px}
+
 ul.links li {width:111px}
 ul.brands li {width:111px}
 ul.brands li img {width:90px; height:45px}
@@ -261,3 +264,5 @@ ul.brands li div.text {padding:12px 10px; border:1px solid #EEE; margin:0 10px 0
     max-width:180px;
     padding: 10px;
 }
+
+a.ui-selected { background: #FC763E; color: white; }
