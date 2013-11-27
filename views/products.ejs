@@ -23,8 +23,7 @@
                     catePart += '/' + categoryGroup[group.name].name;
                 }
             });
-            catePart = catePart || '/all';
-            return '/' + page.name + catePart;
+            return '/' + page.name + (catePart || '/all');
         };
         page.categoryGroups.forEach(function(group, index) {
             if (index > 0) {
