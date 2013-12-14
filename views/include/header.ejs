@@ -6,8 +6,8 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>{%= headTitle ? headTitle + ' - ' : '' %}七日美容网</title>
-        <meta name="description" content="七日美容馆为你推荐精品护肤、彩妆、香水、保健品等产品，让你健康美丽每一天。" />
+        <title>{%= headTitle ? headTitle + ' - ' : '' %}{%= site.title %}</title>
+        <meta name="description" content="{%= site.description %}" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" href="/css/normalize.css" />
@@ -19,13 +19,12 @@
         <script src="/js/plugins.js"></script>
         <script src="/js/main.js"></script>
 
-        
         <script src="/js/qiri.js?v=1.2"></script>
     </head>
     <body>
         <div class="container">
             <div class="span-9">
-                <a href="/" title="七日美容馆" target="_self"><img src="/img/logo-60.gif" border="0" alt="七日美容馆"></a>
+                <a href="/" title="{%= site.title %}" target="_self"><img src="{%= site.logo %}" border="0" alt="{%= site.title %}"></a>
             </div>
             
             <div class="span-15 last">
@@ -58,12 +57,10 @@
         <div class="navbar">
             <div class="container">
                 <ul>
-                    <li><a {% if(page.name == 'home') { %}class="current"{% } %} href="/">首页</a></li>
-                    <li><a {% if(page.name == 'skincare') { %}class="current"{% } %} href="/skincare">面部护肤</a></li>
-                    <li><a {% if(page.name == 'makeup') { %}class="current"{% } %} href="/makeup">时尚彩妆</a></li>
-                    <li><a {% if(page.name == 'men') { %}class="current"{% } %} href="/men">男士护肤</a></li>
-                    <li><a {% if(page.name == 'perfume') { %}class="current"{% } %} href="/perfume">香水</a></li>
-                    <li><a {% if(page.name == 'health') { %}class="current"{% } %} href="/health">保健品</a></li>
+                    {% config.site.navs.forEach(function(nav) { %}
+                        <li><a {% if(page.name == nav.link) { %}class="current"{% } %} href="/{%= nav.link == 'home' ? '' : nav.link %}"
+                            >{%= nav.title%}</a></li>
+                    {% }) %}
                 </ul>
             </div>
         </div>

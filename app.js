@@ -68,6 +68,7 @@ app.use(function(req, res, next) {
 
 app.locals({
     page : {},
+    site : config.site,
     headTitle : ''
 });
 
