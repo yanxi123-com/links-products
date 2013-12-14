@@ -1,7 +1,7 @@
 Show links & products
 -----------------
 
-本项目是用Nodejs和MongoDB搭建起来的、用于快速生成以链接和商品为主要内容的网站。
+本项目是用 Nodejs 和 MongoDB 搭建起来的、用于快速生成以链接和商品为主要内容的网站。
 
 ### 管理页面
 http://hostname:port/manage
