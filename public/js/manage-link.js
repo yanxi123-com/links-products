@@ -245,7 +245,7 @@ $(function() {
                     collectionId : $m.data('collection-id'),
                     id : $('#changeAreaId').val(),
                     title : $('#changeAreaTitle').val(),
-                    type : $('input[name=newAreaType]:radio:checked').val()
+                    type : $('input[name=changeAreaType]:radio:checked').val()
                 };
                 $.ajax('/manage/operation', {
                     type : 'POST',
