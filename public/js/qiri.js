@@ -70,7 +70,7 @@ $(function(){
     a.src = g;
     m.parentNode.insertBefore(a, m);
 })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-ga('create', 'UA-100604-11', 'qiri.com');
+ga('create', 'UA-100604-11', 'meirong.qiri.com');
 ga('send', 'pageview');
 
 /* taobao */
